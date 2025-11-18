@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { meetings } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
+import { inngest } from '@/lib/inngest';
 import crypto from 'crypto';
 
 // Stream webhook event types
@@ -125,12 +126,13 @@ async function handleCallEnded(event: StreamWebhookEvent): Promise<void> {
 
     console.log(`Meeting ${meeting.id} ended, duration: ${durationSeconds}s`);
 
-    // TODO: Dispatch background job for post-call processing
-    // This will be implemented in task 7.1
-    // await inngest.send({
-    //   name: 'meetings/process-completion',
-    //   data: { meetingId: meeting.id },
-    // });
+    // Dispatch background job for post-call processing
+    await inngest.send({
+      name: 'meetings/process-completion',
+      data: { meetingId: meeting.id },
+    });
+
+    console.log(`Dispatched post-call processing job for meeting ${meeting.id}`);
   } catch (error) {
     console.error('Error handling call ended:', error);
   }
@@ -161,6 +163,17 @@ async function handleTranscriptionReady(event: StreamWebhookEvent & { transcript
         .where(eq(meetings.id, meeting.id));
 
       console.log(`Transcription ready for meeting ${meeting.id}`);
+
+      // Dispatch transcript processing job
+      await inngest.send({
+        name: 'meetings/process-transcript',
+        data: { 
+          meetingId: meeting.id,
+          transcriptUrl: event.transcription_url,
+        },
+      });
+
+      console.log(`Dispatched transcript processing job for meeting ${meeting.id}`);
     }
   } catch (error) {
     console.error('Error handling transcription ready:', error);

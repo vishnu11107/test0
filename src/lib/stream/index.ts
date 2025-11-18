@@ -29,7 +29,8 @@ function getStreamCredentials() {
 export function generateStreamToken(userId: string, validityInSeconds: number = 3600): string {
   const { apiSecret } = getStreamCredentials();
 
-  const issuedAt = Math.floor(Date.now() / 1000);
+  // Subtract 30 seconds from current time to account for clock skew
+  const issuedAt = Math.floor(Date.now() / 1000) - 30;
   const expiresAt = issuedAt + validityInSeconds;
 
   const payload = {
@@ -47,7 +48,8 @@ export function generateStreamToken(userId: string, validityInSeconds: number = 
 function generateServerToken(): string {
   const { apiSecret } = getStreamCredentials();
 
-  const issuedAt = Math.floor(Date.now() / 1000);
+  // Subtract 30 seconds from current time to account for clock skew
+  const issuedAt = Math.floor(Date.now() / 1000) - 30;
   const expiresAt = issuedAt + 3600; // 1 hour
 
   const payload = {
@@ -75,7 +77,7 @@ async function streamApiRequest(
   const url = `${STREAM_API_BASE_URL}${endpoint}${separator}api_key=${apiKey}`;
   
   const headers: Record<string, string> = {
-    'Authorization': token,
+    'Authorization': `Bearer ${token}`,
     'Stream-Auth-Type': 'jwt',
     'X-Stream-Client': `meet-ai-platform`,
   };

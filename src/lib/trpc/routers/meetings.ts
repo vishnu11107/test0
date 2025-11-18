@@ -5,6 +5,13 @@ import { eq, and, sql, desc, count, or } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { nanoid } from 'nanoid';
 import { createStreamCall, generateStreamToken } from '@/lib/stream';
+import { 
+  parseTranscript, 
+  transcriptToText, 
+  answerMeetingQuestion,
+  searchTranscript,
+  getTranscriptByTimeRange 
+} from '@/lib/post-call';
 
 // Validation schemas
 export const createMeetingSchema = z.object({
@@ -40,6 +47,18 @@ export const updateMeetingStatusSchema = z.object({
 
 export const generateTokenSchema = z.object({
   meetingId: z.string(),
+});
+
+export const getTranscriptSchema = z.object({
+  meetingId: z.string(),
+  search: z.string().optional(),
+  startTime: z.number().optional(),
+  endTime: z.number().optional(),
+});
+
+export const askQuestionSchema = z.object({
+  meetingId: z.string(),
+  question: z.string().min(1, 'Question is required'),
 });
 
 // Valid status transitions
@@ -418,6 +437,135 @@ export const meetingsRouter = router({
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to generate Stream token',
+        });
+      }
+    }),
+
+  // Get meeting transcript with optional search and time filtering
+  getTranscript: protectedProcedure
+    .input(getTranscriptSchema)
+    .query(async ({ input, ctx }) => {
+      const { meetingId, search, startTime, endTime } = input;
+
+      // Verify meeting exists and belongs to user
+      const meeting = await ctx.db.query.meetings.findFirst({
+        where: and(
+          eq(meetings.id, meetingId),
+          eq(meetings.userId, ctx.user.id)
+        ),
+      });
+
+      if (!meeting) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Meeting not found',
+        });
+      }
+
+      if (!meeting.transcriptUrl) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Transcript not available for this meeting',
+        });
+      }
+
+      try {
+        // Fetch transcript from URL
+        const response = await fetch(meeting.transcriptUrl);
+        if (!response.ok) {
+          throw new Error('Failed to fetch transcript');
+        }
+
+        const transcriptData = await response.json();
+        let transcript = parseTranscript(transcriptData);
+
+        // Apply search filter if provided
+        if (search) {
+          transcript = searchTranscript(transcript, search);
+        }
+
+        // Apply time range filter if provided
+        if (startTime !== undefined && endTime !== undefined) {
+          transcript = getTranscriptByTimeRange(transcript, startTime, endTime);
+        }
+
+        return {
+          entries: transcript,
+          totalEntries: transcript.length,
+          searchTerm: search,
+          timeRange: startTime !== undefined && endTime !== undefined 
+            ? { startTime, endTime } 
+            : null,
+        };
+      } catch (error) {
+        console.error('Error fetching transcript:', error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch transcript',
+        });
+      }
+    }),
+
+  // Ask a question about a meeting using AI
+  askQuestion: protectedProcedure
+    .input(askQuestionSchema)
+    .mutation(async ({ input, ctx }) => {
+      const { meetingId, question } = input;
+
+      // Verify meeting exists and belongs to user
+      const meeting = await ctx.db.query.meetings.findFirst({
+        where: and(
+          eq(meetings.id, meetingId),
+          eq(meetings.userId, ctx.user.id)
+        ),
+        with: {
+          agent: true,
+        },
+      });
+
+      if (!meeting) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Meeting not found',
+        });
+      }
+
+      if (!meeting.transcriptUrl) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Transcript not available for this meeting',
+        });
+      }
+
+      try {
+        // Fetch transcript from URL
+        const response = await fetch(meeting.transcriptUrl);
+        if (!response.ok) {
+          throw new Error('Failed to fetch transcript');
+        }
+
+        const transcriptData = await response.json();
+        const transcript = parseTranscript(transcriptData);
+        const transcriptText = transcriptToText(transcript);
+
+        // Generate answer using AI
+        const answer = await answerMeetingQuestion(
+          question,
+          transcriptText,
+          meeting.agent.instructions
+        );
+
+        return {
+          question,
+          answer,
+          meetingId,
+          timestamp: new Date().toISOString(),
+        };
+      } catch (error) {
+        console.error('Error answering question:', error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to answer question about meeting',
         });
       }
     }),

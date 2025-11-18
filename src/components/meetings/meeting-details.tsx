@@ -19,6 +19,10 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
+import { MeetingSummary } from './meeting-summary';
+import { TranscriptViewer } from './transcript-viewer';
+import { VideoPlayer } from './video-player';
+import { AIChat } from './ai-chat';
 
 interface MeetingDetailsProps {
   meetingId: string;
@@ -163,7 +167,7 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
 
       {/* Tabbed Content */}
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="summary" disabled={!meeting.summary}>
             Summary
@@ -173,6 +177,9 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
           </TabsTrigger>
           <TabsTrigger value="recording" disabled={!meeting.recordingUrl}>
             Recording
+          </TabsTrigger>
+          <TabsTrigger value="chat" disabled={!meeting.transcriptUrl}>
+            Q&A
           </TabsTrigger>
         </TabsList>
 
@@ -236,83 +243,100 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
         </TabsContent>
 
         <TabsContent value="summary">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                AI-Generated Summary
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {meeting.summary ? (
-                <div className="prose prose-sm max-w-none">
-                  <p className="text-sm whitespace-pre-wrap">{meeting.summary}</p>
-                </div>
-              ) : (
+          {meeting.summary ? (
+            <MeetingSummary 
+              summary={meeting.summary}
+              meeting={{
+                name: meeting.name,
+                startedAt: meeting.startedAt?.toISOString() || null,
+                endedAt: meeting.endedAt?.toISOString() || null,
+                durationSeconds: meeting.durationSeconds,
+                agent: meeting.agent,
+              }}
+            />
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  AI-Generated Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
                 <p className="text-sm text-muted-foreground">
                   Summary not available yet. It will be generated after the meeting ends.
                 </p>
-              )}
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         <TabsContent value="transcript">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MessageSquare className="h-5 w-5" />
-                Meeting Transcript
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {meeting.transcriptUrl ? (
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">
-                    Transcript is available for download.
-                  </p>
-                  <Button variant="outline" asChild>
-                    <a href={meeting.transcriptUrl} target="_blank" rel="noopener noreferrer">
-                      <FileText className="h-4 w-4 mr-2" />
-                      View Transcript
-                    </a>
-                  </Button>
-                </div>
-              ) : (
+          {meeting.transcriptUrl ? (
+            <TranscriptViewer meetingId={meeting.id} />
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5" />
+                  Meeting Transcript
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
                 <p className="text-sm text-muted-foreground">
                   Transcript not available yet. It will be generated after the meeting ends.
                 </p>
-              )}
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         <TabsContent value="recording">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Video className="h-5 w-5" />
-                Meeting Recording
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {meeting.recordingUrl ? (
-                <div className="space-y-4">
-                  <video
-                    controls
-                    className="w-full rounded-lg"
-                    src={meeting.recordingUrl}
-                  >
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-              ) : (
+          {meeting.recordingUrl ? (
+            <VideoPlayer 
+              recordingUrl={meeting.recordingUrl}
+              meetingName={meeting.name}
+              duration={meeting.durationSeconds || undefined}
+            />
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Video className="h-5 w-5" />
+                  Meeting Recording
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
                 <p className="text-sm text-muted-foreground">
                   Recording not available yet. It will be available after the meeting ends.
                 </p>
-              )}
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        <TabsContent value="chat">
+          {meeting.transcriptUrl ? (
+            <AIChat 
+              meetingId={meeting.id}
+              agentName={meeting.agent?.name}
+              agentAvatarSeed={meeting.agent?.avatarSeed || undefined}
+            />
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5" />
+                  Meeting Q&A
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Q&A will be available after the meeting transcript is processed.
+                </p>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
       </Tabs>
     </div>

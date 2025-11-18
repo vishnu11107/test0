@@ -24,14 +24,15 @@ export default function CallPage({ params }: CallPageProps) {
   const updateMeetingMutation = trpc.meetings.updateStatus.useMutation();
 
   useEffect(() => {
-    // Update meeting status to active when call page loads
-    if (meeting && meeting.status === 'upcoming') {
+    // Update meeting status to active when call page loads (only if it's upcoming)
+    if (meeting && meeting.status === 'upcoming' && !updateMeetingMutation.isPending) {
       updateMeetingMutation.mutate({
         id,
         status: 'active',
       });
     }
-  }, [meeting?.status, id, updateMeetingMutation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [meeting?.status, id]); // Only depend on status and id
 
   if (isLoading) {
     return (
