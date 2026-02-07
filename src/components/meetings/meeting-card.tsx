@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Edit, Trash2, Video, Calendar, Clock } from 'lucide-react';
 import type { Meeting } from '@/lib/db/schema';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, format } from 'date-fns';
 
 interface MeetingCardProps {
   meeting: Meeting & {
@@ -33,6 +33,8 @@ const statusConfig = {
 };
 
 export function MeetingCard({ meeting, onEdit, onDelete, onJoin, onViewDetails }: MeetingCardProps) {
+  const [formattedDate, setFormattedDate] = React.useState<string | null>(null);
+
   const avatarUrl = meeting.agent?.avatarSeed
     ? `https://api.dicebear.com/7.x/bottts/svg?seed=${meeting.agent.avatarSeed}`
     : undefined;
@@ -41,6 +43,11 @@ export function MeetingCard({ meeting, onEdit, onDelete, onJoin, onViewDetails }
   const canJoin = meeting.status === 'upcoming' || meeting.status === 'active';
   const canEdit = meeting.status === 'upcoming';
   const canDelete = meeting.status !== 'active';
+
+  // Use useEffect to format relative date only on client to avoid hydration mismatch
+  React.useEffect(() => {
+    setFormattedDate(formatDistanceToNow(new Date(meeting.createdAt), { addSuffix: true }));
+  }, [meeting.createdAt]);
 
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -66,7 +73,7 @@ export function MeetingCard({ meeting, onEdit, onDelete, onJoin, onViewDetails }
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Calendar className="h-4 w-4" />
           <span>
-            Created {formatDistanceToNow(new Date(meeting.createdAt), { addSuffix: true })}
+            Created {formattedDate ?? format(new Date(meeting.createdAt), 'MMM d, yyyy')}
           </span>
         </div>
         {meeting.durationSeconds && (

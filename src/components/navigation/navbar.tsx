@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,8 +27,14 @@ export function Navbar({ className }: NavbarProps) {
   const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-  const user = session?.user;
+  // Wait for client-side mount to avoid hydration mismatch with session data
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const user = isMounted ? session?.user : undefined;
   const initials = user?.name
     ? user.name
         .split(' ')

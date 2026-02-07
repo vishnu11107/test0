@@ -14,10 +14,17 @@ import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 export function UserProfile() {
   const { data: session, isPending } = useSession();
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Wait for client-side mount to avoid hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleSignOut = async () => {
     try {
@@ -31,7 +38,7 @@ export function UserProfile() {
     }
   };
 
-  if (isPending) {
+  if (!isMounted || isPending) {
     return (
       <Card className="w-full max-w-2xl">
         <CardContent className="pt-6">

@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -17,7 +18,6 @@ import {
   X,
 } from 'lucide-react';
 import { useSession } from '@/lib/auth/client';
-import { useState } from 'react';
 
 interface SidebarProps {
   className?: string;
@@ -63,10 +63,16 @@ const navigationItems = [
 
 export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
-  const { data: session } = useSession();
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const { data: session, isPending } = useSession();
+  const [isMobileOpen, setIsMobileOpen] = React.useState(false);
+  const [isMounted, setIsMounted] = React.useState(false);
 
-  const user = session?.user;
+  // Wait for client-side mount to avoid hydration mismatch with session data
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const user = isMounted ? session?.user : undefined;
   const initials = user?.name
     ? user.name
         .split(' ')
