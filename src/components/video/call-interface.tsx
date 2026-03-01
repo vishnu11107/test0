@@ -44,7 +44,8 @@ export function CallInterface({
     error: agentError,
   } = useRealtime({
     apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || '',
-    instructions: agentInstructions || `You are ${agentName}, a helpful AI assistant.`,
+    instructions:
+      agentInstructions || `You are ${agentName}, a helpful AI assistant.`,
     voice: 'alloy',
     autoConnect: false,
     onError: (error) => {
@@ -81,7 +82,8 @@ export function CallInterface({
 
         // Set up audio processing for AI agent
         if (window.AudioContext || (window as any).webkitAudioContext) {
-          const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)({
+          const audioContext = new (window.AudioContext ||
+            (window as any).webkitAudioContext)({
             sampleRate: 24000,
           });
           const source = audioContext.createMediaStreamSource(mediaStream);
@@ -94,7 +96,10 @@ export function CallInterface({
               // Convert float32 to int16 PCM
               const pcm16 = new Int16Array(inputData.length);
               for (let i = 0; i < inputData.length; i++) {
-                pcm16[i] = Math.max(-32768, Math.min(32767, inputData[i] * 32768));
+                pcm16[i] = Math.max(
+                  -32768,
+                  Math.min(32767, inputData[i] * 32768)
+                );
               }
 
               sendAudio(pcm16.buffer);
@@ -133,7 +138,9 @@ export function CallInterface({
   // Update call duration
   useEffect(() => {
     const interval = setInterval(() => {
-      setCallDuration(Math.floor((Date.now() - callStartTimeRef.current) / 1000));
+      setCallDuration(
+        Math.floor((Date.now() - callStartTimeRef.current) / 1000)
+      );
     }, 1000);
 
     return () => clearInterval(interval);
@@ -185,8 +192,12 @@ export function CallInterface({
       {/* Header */}
       <div className="flex items-center justify-between bg-gray-800 px-6 py-4">
         <div>
-          <h1 className="text-lg font-semibold text-white">Meeting with {agentName}</h1>
-          <p className="text-sm text-gray-400">{formatDuration(callDuration)}</p>
+          <h1 className="text-lg font-semibold text-white">
+            Meeting with {agentName}
+          </h1>
+          <p className="text-sm text-gray-400">
+            {formatDuration(callDuration)}
+          </p>
         </div>
       </div>
 

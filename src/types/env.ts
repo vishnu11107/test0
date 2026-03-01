@@ -1,11 +1,11 @@
 export interface Env {
   // Database
-  DATABASE_URL: "postgresql://neondb_owner:npg_cO3KXi7wbHqB@ep-summer-sound-a4oa0opd-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
+  DATABASE_URL: 'postgresql://neondb_owner:npg_cO3KXi7wbHqB@ep-summer-sound-a4oa0opd-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require';
 
   // Authentication
   NEXTAUTH_SECRET: string;
   NEXTAUTH_URL: string;
-  
+
   // OAuth Providers (optional)
   GOOGLE_CLIENT_ID?: string;
   GOOGLE_CLIENT_SECRET?: string;

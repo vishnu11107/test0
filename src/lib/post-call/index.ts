@@ -1,6 +1,6 @@
 /**
  * Post-call processing utilities
- * 
+ *
  * Utilities for handling post-call intelligence features including
  * transcript processing, summary generation, and Q&A functionality.
  */
@@ -36,7 +36,7 @@ export function parseTranscript(transcriptData: any): TranscriptEntry[] {
 
   // Handle string format (plain text)
   if (typeof transcriptData === 'string') {
-    const lines = transcriptData.split('\n').filter(line => line.trim());
+    const lines = transcriptData.split('\n').filter((line) => line.trim());
     return lines.map((line, index) => {
       // Try to parse "Speaker: Text" format
       const match = line.match(/^(user|agent|User|Agent):\s*(.+)$/i);
@@ -71,7 +71,7 @@ export function parseTranscript(transcriptData: any): TranscriptEntry[] {
  */
 export function transcriptToText(transcript: TranscriptEntry[]): string {
   return transcript
-    .map(entry => `${entry.speaker}: ${entry.text}`)
+    .map((entry) => `${entry.speaker}: ${entry.text}`)
     .join('\n');
 }
 
@@ -166,7 +166,9 @@ Be concise but comprehensive in your responses.`,
       temperature: 0.2,
     });
 
-    return completion.choices[0]?.message?.content || 'Unable to generate response';
+    return (
+      completion.choices[0]?.message?.content || 'Unable to generate response'
+    );
   } catch (error) {
     console.error('Error answering meeting question:', error);
     throw new Error('Failed to answer question about meeting');
@@ -181,7 +183,7 @@ export function searchTranscript(
   query: string
 ): TranscriptEntry[] {
   const searchTerm = query.toLowerCase();
-  return transcript.filter(entry =>
+  return transcript.filter((entry) =>
     entry.text.toLowerCase().includes(searchTerm)
   );
 }
@@ -194,7 +196,7 @@ export function getTranscriptByTimeRange(
   startTime: number,
   endTime: number
 ): TranscriptEntry[] {
-  return transcript.filter(entry =>
-    entry.timestamp >= startTime && entry.timestamp <= endTime
+  return transcript.filter(
+    (entry) => entry.timestamp >= startTime && entry.timestamp <= endTime
   );
 }

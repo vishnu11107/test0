@@ -6,14 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { GlobalSearch } from './global-search';
-import {
-  Search,
-  Bell,
-  Settings,
-  LogOut,
-  User,
-  Command,
-} from 'lucide-react';
+import { Search, Bell, Settings, LogOut, User, Command } from 'lucide-react';
 import { useSession, signOut } from '@/lib/auth/client';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -78,13 +71,13 @@ export function Navbar({ className }: NavbarProps) {
         )}
       >
         {/* Search */}
-        <div className="flex-1 max-w-md">
+        <div className="max-w-md flex-1">
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search agents, meetings... (⌘K)"
-              className="pl-8 pr-12 cursor-pointer"
+              className="cursor-pointer pl-8 pr-12"
               onClick={() => setIsSearchOpen(true)}
               onKeyDown={handleSearchKeyDown}
               readOnly
@@ -100,11 +93,16 @@ export function Navbar({ className }: NavbarProps) {
         {/* Right side actions */}
         <div className="flex items-center gap-2">
           {/* Notifications */}
-          <Button variant="ghost" size="sm" className="relative" aria-label="Notifications">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="relative"
+            aria-label="Notifications"
+          >
             <Bell className="h-5 w-5" />
             <span className="sr-only">Notifications</span>
             {/* Notification badge */}
-            <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500" />
+            <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-red-500" />
           </Button>
 
           {/* User menu */}
@@ -117,10 +115,15 @@ export function Navbar({ className }: NavbarProps) {
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
               >
                 <Avatar className="h-6 w-6">
-                  <AvatarImage src={user.image || undefined} alt={user.name || ''} />
-                  <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+                  <AvatarImage
+                    src={user.image || undefined}
+                    alt={user.name || ''}
+                  />
+                  <AvatarFallback className="text-xs">
+                    {initials}
+                  </AvatarFallback>
                 </Avatar>
-                <span className="hidden md:inline-block text-sm">
+                <span className="hidden text-sm md:inline-block">
                   {user.name || 'User'}
                 </span>
               </Button>
@@ -140,7 +143,7 @@ export function Navbar({ className }: NavbarProps) {
                       {user.email}
                     </div>
                     <div className="my-1 h-px bg-border" />
-                    
+
                     <Button
                       variant="ghost"
                       size="sm"
@@ -153,7 +156,7 @@ export function Navbar({ className }: NavbarProps) {
                       <User className="mr-2 h-4 w-4" />
                       Profile
                     </Button>
-                    
+
                     <Button
                       variant="ghost"
                       size="sm"
@@ -166,13 +169,13 @@ export function Navbar({ className }: NavbarProps) {
                       <Settings className="mr-2 h-4 w-4" />
                       Settings
                     </Button>
-                    
+
                     <div className="my-1 h-px bg-border" />
-                    
+
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="w-full justify-start text-red-600 hover:text-red-600 hover:bg-red-50"
+                      className="w-full justify-start text-red-600 hover:bg-red-50 hover:text-red-600"
                       onClick={() => {
                         setIsUserMenuOpen(false);
                         handleSignOut();

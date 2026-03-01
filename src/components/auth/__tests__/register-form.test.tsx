@@ -31,10 +31,14 @@ describe('RegisterForm', () => {
 
     const passwordInput = screen.getByLabelText(/^password$/i);
     const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
-    const submitButton = screen.getByRole('button', { name: /create account/i });
+    const submitButton = screen.getByRole('button', {
+      name: /create account/i,
+    });
 
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
-    fireEvent.change(confirmPasswordInput, { target: { value: 'different123' } });
+    fireEvent.change(confirmPasswordInput, {
+      target: { value: 'different123' },
+    });
     fireEvent.click(submitButton);
 
     // Form should not submit with mismatched passwords
@@ -53,12 +57,16 @@ describe('RegisterForm', () => {
     const emailInput = screen.getByLabelText(/^email$/i);
     const passwordInput = screen.getByLabelText(/^password$/i);
     const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
-    const submitButton = screen.getByRole('button', { name: /create account/i });
+    const submitButton = screen.getByRole('button', {
+      name: /create account/i,
+    });
 
     fireEvent.change(nameInput, { target: { value: 'John Doe' } });
     fireEvent.change(emailInput, { target: { value: 'john@example.com' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
-    fireEvent.change(confirmPasswordInput, { target: { value: 'password123' } });
+    fireEvent.change(confirmPasswordInput, {
+      target: { value: 'password123' },
+    });
     fireEvent.click(submitButton);
 
     await waitFor(() => {
@@ -76,7 +84,9 @@ describe('RegisterForm', () => {
 
     const passwordInput = screen.getByLabelText(/^password$/i);
     const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
-    const submitButton = screen.getByRole('button', { name: /create account/i });
+    const submitButton = screen.getByRole('button', {
+      name: /create account/i,
+    });
 
     fireEvent.change(passwordInput, { target: { value: 'short' } });
     fireEvent.change(confirmPasswordInput, { target: { value: 'short' } });
@@ -100,12 +110,16 @@ describe('RegisterForm', () => {
     const emailInput = screen.getByLabelText(/^email$/i);
     const passwordInput = screen.getByLabelText(/^password$/i);
     const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
-    const submitButton = screen.getByRole('button', { name: /create account/i });
+    const submitButton = screen.getByRole('button', {
+      name: /create account/i,
+    });
 
     fireEvent.change(nameInput, { target: { value: 'John Doe' } });
     fireEvent.change(emailInput, { target: { value: 'existing@example.com' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
-    fireEvent.change(confirmPasswordInput, { target: { value: 'password123' } });
+    fireEvent.change(confirmPasswordInput, {
+      target: { value: 'password123' },
+    });
     fireEvent.click(submitButton);
 
     await waitFor(() => {

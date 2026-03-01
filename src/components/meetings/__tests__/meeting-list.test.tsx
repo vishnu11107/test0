@@ -192,7 +192,10 @@ describe('MeetingList', () => {
     });
 
     (trpc.agents.getMany.useQuery as any).mockReturnValue({
-      data: { data: mockAgents, pagination: { page: 1, limit: 100, total: 2, totalPages: 1 } },
+      data: {
+        data: mockAgents,
+        pagination: { page: 1, limit: 100, total: 2, totalPages: 1 },
+      },
       isLoading: false,
     });
 
@@ -232,7 +235,10 @@ describe('MeetingList', () => {
     });
 
     (trpc.agents.getMany.useQuery as any).mockReturnValue({
-      data: { data: mockAgents, pagination: { page: 1, limit: 100, total: 2, totalPages: 1 } },
+      data: {
+        data: mockAgents,
+        pagination: { page: 1, limit: 100, total: 2, totalPages: 1 },
+      },
       isLoading: false,
     });
 
@@ -272,7 +278,10 @@ describe('MeetingList', () => {
     });
 
     (trpc.agents.getMany.useQuery as any).mockReturnValue({
-      data: { data: mockAgents, pagination: { page: 1, limit: 100, total: 2, totalPages: 1 } },
+      data: {
+        data: mockAgents,
+        pagination: { page: 1, limit: 100, total: 2, totalPages: 1 },
+      },
       isLoading: false,
     });
 
@@ -293,7 +302,9 @@ describe('MeetingList', () => {
 
     render(<MeetingList />);
 
-    const createButton = screen.getByRole('button', { name: /create meeting/i });
+    const createButton = screen.getByRole('button', {
+      name: /create meeting/i,
+    });
     fireEvent.click(createButton);
 
     expect(screen.getByText(/create a new meeting/i)).toBeInTheDocument();
@@ -301,25 +312,30 @@ describe('MeetingList', () => {
 
   it('filters meetings by search query', async () => {
     const mockQueryFn = vi.fn();
-    (trpc.meetings.getMany.useQuery as any).mockImplementation((params: any) => {
-      mockQueryFn(params);
-      return {
-        data: {
-          data: params.search ? [mockMeetings[0]] : mockMeetings,
-          pagination: {
-            page: 1,
-            limit: 12,
-            total: params.search ? 1 : 2,
-            totalPages: 1,
+    (trpc.meetings.getMany.useQuery as any).mockImplementation(
+      (params: any) => {
+        mockQueryFn(params);
+        return {
+          data: {
+            data: params.search ? [mockMeetings[0]] : mockMeetings,
+            pagination: {
+              page: 1,
+              limit: 12,
+              total: params.search ? 1 : 2,
+              totalPages: 1,
+            },
           },
-        },
-        isLoading: false,
-        error: null,
-      };
-    });
+          isLoading: false,
+          error: null,
+        };
+      }
+    );
 
     (trpc.agents.getMany.useQuery as any).mockReturnValue({
-      data: { data: mockAgents, pagination: { page: 1, limit: 100, total: 2, totalPages: 1 } },
+      data: {
+        data: mockAgents,
+        pagination: { page: 1, limit: 100, total: 2, totalPages: 1 },
+      },
       isLoading: false,
     });
 
@@ -357,25 +373,30 @@ describe('MeetingList', () => {
 
   it('filters meetings by status', () => {
     const mockQueryFn = vi.fn();
-    (trpc.meetings.getMany.useQuery as any).mockImplementation((params: any) => {
-      mockQueryFn(params);
-      return {
-        data: {
-          data: mockMeetings,
-          pagination: {
-            page: 1,
-            limit: 12,
-            total: 2,
-            totalPages: 1,
+    (trpc.meetings.getMany.useQuery as any).mockImplementation(
+      (params: any) => {
+        mockQueryFn(params);
+        return {
+          data: {
+            data: mockMeetings,
+            pagination: {
+              page: 1,
+              limit: 12,
+              total: 2,
+              totalPages: 1,
+            },
           },
-        },
-        isLoading: false,
-        error: null,
-      };
-    });
+          isLoading: false,
+          error: null,
+        };
+      }
+    );
 
     (trpc.agents.getMany.useQuery as any).mockReturnValue({
-      data: { data: mockAgents, pagination: { page: 1, limit: 100, total: 2, totalPages: 1 } },
+      data: {
+        data: mockAgents,
+        pagination: { page: 1, limit: 100, total: 2, totalPages: 1 },
+      },
       isLoading: false,
     });
 
@@ -414,25 +435,30 @@ describe('MeetingList', () => {
 
   it('filters meetings by agent', () => {
     const mockQueryFn = vi.fn();
-    (trpc.meetings.getMany.useQuery as any).mockImplementation((params: any) => {
-      mockQueryFn(params);
-      return {
-        data: {
-          data: mockMeetings,
-          pagination: {
-            page: 1,
-            limit: 12,
-            total: 2,
-            totalPages: 1,
+    (trpc.meetings.getMany.useQuery as any).mockImplementation(
+      (params: any) => {
+        mockQueryFn(params);
+        return {
+          data: {
+            data: mockMeetings,
+            pagination: {
+              page: 1,
+              limit: 12,
+              total: 2,
+              totalPages: 1,
+            },
           },
-        },
-        isLoading: false,
-        error: null,
-      };
-    });
+          isLoading: false,
+          error: null,
+        };
+      }
+    );
 
     (trpc.agents.getMany.useQuery as any).mockReturnValue({
-      data: { data: mockAgents, pagination: { page: 1, limit: 100, total: 2, totalPages: 1 } },
+      data: {
+        data: mockAgents,
+        pagination: { page: 1, limit: 100, total: 2, totalPages: 1 },
+      },
       isLoading: false,
     });
 
@@ -471,25 +497,30 @@ describe('MeetingList', () => {
 
   it('clears all filters when clear button is clicked', () => {
     const mockQueryFn = vi.fn();
-    (trpc.meetings.getMany.useQuery as any).mockImplementation((params: any) => {
-      mockQueryFn(params);
-      return {
-        data: {
-          data: mockMeetings,
-          pagination: {
-            page: 1,
-            limit: 12,
-            total: 2,
-            totalPages: 1,
+    (trpc.meetings.getMany.useQuery as any).mockImplementation(
+      (params: any) => {
+        mockQueryFn(params);
+        return {
+          data: {
+            data: mockMeetings,
+            pagination: {
+              page: 1,
+              limit: 12,
+              total: 2,
+              totalPages: 1,
+            },
           },
-        },
-        isLoading: false,
-        error: null,
-      };
-    });
+          isLoading: false,
+          error: null,
+        };
+      }
+    );
 
     (trpc.agents.getMany.useQuery as any).mockReturnValue({
-      data: { data: mockAgents, pagination: { page: 1, limit: 100, total: 2, totalPages: 1 } },
+      data: {
+        data: mockAgents,
+        pagination: { page: 1, limit: 100, total: 2, totalPages: 1 },
+      },
       isLoading: false,
     });
 
@@ -538,7 +569,10 @@ describe('MeetingList', () => {
     });
 
     (trpc.agents.getMany.useQuery as any).mockReturnValue({
-      data: { data: mockAgents, pagination: { page: 1, limit: 100, total: 2, totalPages: 1 } },
+      data: {
+        data: mockAgents,
+        pagination: { page: 1, limit: 100, total: 2, totalPages: 1 },
+      },
       isLoading: false,
     });
 

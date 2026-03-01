@@ -23,7 +23,7 @@ export async function POST() {
     });
   } catch (error) {
     console.error('Inngest test error:', error);
-    
+
     return NextResponse.json(
       {
         success: false,

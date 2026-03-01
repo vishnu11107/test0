@@ -1,6 +1,6 @@
 /**
  * OpenAI Realtime API Integration
- * 
+ *
  * This module provides client-side integration with OpenAI's Realtime API
  * for real-time speech-to-speech AI agent interactions during video calls.
  */
@@ -36,7 +36,8 @@ export interface RealtimeEvent {
 export class OpenAIRealtimeClient {
   private ws: WebSocket | null = null;
   private config: RealtimeConfig;
-  private eventHandlers: Map<RealtimeEventType, Set<(data: any) => void>> = new Map();
+  private eventHandlers: Map<RealtimeEventType, Set<(data: any) => void>> =
+    new Map();
   private isConnected: boolean = false;
   private reconnectAttempts: number = 0;
   private maxReconnectAttempts: number = 3;
@@ -65,10 +66,10 @@ export class OpenAIRealtimeClient {
     try {
       // Create WebSocket connection to OpenAI Realtime API
       const url = 'wss://api.openai.com/v1/realtime?model=' + this.config.model;
-      
+
       this.ws = new WebSocket(url, {
         headers: {
-          'Authorization': `Bearer ${this.config.apiKey}`,
+          Authorization: `Bearer ${this.config.apiKey}`,
           'OpenAI-Beta': 'realtime=v1',
         },
       } as any);
@@ -77,7 +78,7 @@ export class OpenAIRealtimeClient {
         this.isConnected = true;
         this.reconnectAttempts = 0;
         this.emit('connected', {});
-        
+
         // Send session configuration
         this.sendSessionUpdate();
       };
@@ -94,7 +95,7 @@ export class OpenAIRealtimeClient {
       this.ws.onclose = () => {
         this.isConnected = false;
         this.emit('disconnected', {});
-        
+
         // Attempt reconnection
         if (this.reconnectAttempts < this.maxReconnectAttempts) {
           this.reconnectAttempts++;
@@ -119,12 +120,12 @@ export class OpenAIRealtimeClient {
       this.ws.close();
       this.ws = null;
     }
-    
+
     if (this.audioContext) {
       this.audioContext.close();
       this.audioContext = null;
     }
-    
+
     this.isConnected = false;
     this.reconnectAttempts = this.maxReconnectAttempts; // Prevent auto-reconnect
   }
@@ -139,7 +140,8 @@ export class OpenAIRealtimeClient {
       type: 'session.update',
       session: {
         modalities: ['text', 'audio'],
-        instructions: this.config.instructions || 'You are a helpful AI assistant.',
+        instructions:
+          this.config.instructions || 'You are a helpful AI assistant.',
         voice: this.config.voice,
         input_audio_format: 'pcm16',
         output_audio_format: 'pcm16',
@@ -367,6 +369,8 @@ export class OpenAIRealtimeClient {
 /**
  * Create and configure OpenAI Realtime client
  */
-export function createRealtimeClient(config: RealtimeConfig): OpenAIRealtimeClient {
+export function createRealtimeClient(
+  config: RealtimeConfig
+): OpenAIRealtimeClient {
   return new OpenAIRealtimeClient(config);
 }

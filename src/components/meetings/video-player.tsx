@@ -4,18 +4,18 @@ import * as React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 // import { Slider } from '@/components/ui/slider';
-import { 
-  Play, 
-  Pause, 
-  Volume2, 
-  VolumeX, 
-  Maximize, 
+import {
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Maximize,
   Minimize,
   SkipBack,
   SkipForward,
   Video,
   Download,
-  AlertCircle
+  AlertCircle,
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -34,7 +34,11 @@ function formatTime(seconds: number): string {
   return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
-export function VideoPlayer({ recordingUrl, meetingName, duration }: VideoPlayerProps) {
+export function VideoPlayer({
+  recordingUrl,
+  meetingName,
+  duration,
+}: VideoPlayerProps) {
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [currentTime, setCurrentTime] = React.useState(0);
@@ -112,7 +116,8 @@ export function VideoPlayer({ recordingUrl, meetingName, duration }: VideoPlayer
     };
 
     document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    return () =>
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
   // Auto-hide controls in fullscreen
@@ -124,11 +129,11 @@ export function VideoPlayer({ recordingUrl, meetingName, duration }: VideoPlayer
 
     const handleMouseMove = () => {
       setShowControls(true);
-      
+
       if (controlsTimeoutRef.current) {
         clearTimeout(controlsTimeoutRef.current);
       }
-      
+
       controlsTimeoutRef.current = setTimeout(() => {
         setShowControls(false);
       }, 3000);
@@ -235,14 +240,14 @@ export function VideoPlayer({ recordingUrl, meetingName, duration }: VideoPlayer
             Meeting Recording
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center py-12 gap-4">
+        <CardContent className="flex flex-col items-center justify-center gap-4 py-12">
           <AlertCircle className="h-12 w-12 text-destructive" />
           <div className="text-center">
             <p className="text-sm font-medium">Failed to load recording</p>
             <p className="text-sm text-muted-foreground">{error}</p>
           </div>
           <Button onClick={handleDownload} variant="outline">
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="mr-2 h-4 w-4" />
             Download Recording
           </Button>
         </CardContent>
@@ -259,50 +264,53 @@ export function VideoPlayer({ recordingUrl, meetingName, duration }: VideoPlayer
             Meeting Recording
           </div>
           <Button onClick={handleDownload} variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="mr-2 h-4 w-4" />
             Download
           </Button>
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <div 
+        <div
           ref={containerRef}
           className={`relative bg-black ${isFullscreen ? 'h-screen' : 'aspect-video'}`}
         >
           <video
             ref={videoRef}
             src={recordingUrl}
-            className="w-full h-full"
+            className="h-full w-full"
             onClick={togglePlayPause}
           />
 
           {/* Loading Overlay */}
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-              <div className="text-white text-sm">Loading video...</div>
+              <div className="text-sm text-white">Loading video...</div>
             </div>
           )}
 
           {/* Controls Overlay */}
-          <div 
+          <div
             className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 transition-opacity duration-300 ${
               showControls ? 'opacity-100' : 'opacity-0'
             }`}
           >
             {/* Progress Bar */}
             <div className="mb-4">
-              <div className="relative w-full h-2 bg-white/20 rounded-full cursor-pointer" onClick={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                const percent = (e.clientX - rect.left) / rect.width;
-                const newTime = percent * videoDuration;
-                handleSeek([newTime]);
-              }}>
-                <div 
-                  className="absolute top-0 left-0 h-full bg-white rounded-full"
+              <div
+                className="relative h-2 w-full cursor-pointer rounded-full bg-white/20"
+                onClick={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const percent = (e.clientX - rect.left) / rect.width;
+                  const newTime = percent * videoDuration;
+                  handleSeek([newTime]);
+                }}
+              >
+                <div
+                  className="absolute left-0 top-0 h-full rounded-full bg-white"
                   style={{ width: `${(currentTime / videoDuration) * 100}%` }}
                 />
               </div>
-              <div className="flex justify-between text-xs text-white/70 mt-1">
+              <div className="mt-1 flex justify-between text-xs text-white/70">
                 <span>{formatTime(currentTime)}</span>
                 <span>{formatTime(videoDuration)}</span>
               </div>
@@ -319,7 +327,7 @@ export function VideoPlayer({ recordingUrl, meetingName, duration }: VideoPlayer
                 >
                   <SkipBack className="h-4 w-4" />
                 </Button>
-                
+
                 <Button
                   variant="ghost"
                   size="sm"
@@ -332,7 +340,7 @@ export function VideoPlayer({ recordingUrl, meetingName, duration }: VideoPlayer
                     <Play className="h-5 w-5" />
                   )}
                 </Button>
-                
+
                 <Button
                   variant="ghost"
                   size="sm"
@@ -342,7 +350,7 @@ export function VideoPlayer({ recordingUrl, meetingName, duration }: VideoPlayer
                   <SkipForward className="h-4 w-4" />
                 </Button>
 
-                <div className="flex items-center gap-2 ml-4">
+                <div className="ml-4 flex items-center gap-2">
                   <Button
                     variant="ghost"
                     size="sm"
@@ -355,14 +363,17 @@ export function VideoPlayer({ recordingUrl, meetingName, duration }: VideoPlayer
                       <Volume2 className="h-4 w-4" />
                     )}
                   </Button>
-                  
-                  <div className="w-20 relative h-2 bg-white/20 rounded-full cursor-pointer" onClick={(e) => {
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    const percent = (e.clientX - rect.left) / rect.width;
-                    handleVolumeChange([percent]);
-                  }}>
-                    <div 
-                      className="absolute top-0 left-0 h-full bg-white rounded-full"
+
+                  <div
+                    className="relative h-2 w-20 cursor-pointer rounded-full bg-white/20"
+                    onClick={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const percent = (e.clientX - rect.left) / rect.width;
+                      handleVolumeChange([percent]);
+                    }}
+                  >
+                    <div
+                      className="absolute left-0 top-0 h-full rounded-full bg-white"
                       style={{ width: `${(isMuted ? 0 : volume) * 100}%` }}
                     />
                   </div>

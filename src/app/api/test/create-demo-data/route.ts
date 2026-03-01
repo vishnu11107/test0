@@ -22,7 +22,9 @@ export async function POST() {
           email: 'demo@meetai.com',
           emailVerified: true,
           subscriptionTier: 'pro',
-          subscriptionExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+          subscriptionExpiresAt: new Date(
+            Date.now() + 30 * 24 * 60 * 60 * 1000
+          ), // 30 days from now
         })
         .returning();
     } catch (error) {
@@ -32,7 +34,7 @@ export async function POST() {
         .from(users)
         .where(eq(users.email, 'demo@meetai.com'))
         .limit(1);
-      
+
       if (existingUsers.length > 0) {
         demoUser = existingUsers[0];
       } else {
@@ -78,7 +80,7 @@ export async function POST() {
       if (existingAgents.length > 0) {
         await db.delete(agents).where(eq(agents.userId, demoUser.id));
       }
-      
+
       createdAgents = await db.insert(agents).values(agentData).returning();
       console.log(`✅ Created ${createdAgents.length} demo agents`);
     }
@@ -120,7 +122,10 @@ export async function POST() {
         },
       ];
 
-      createdMeetings = await db.insert(meetings).values(meetingData).returning();
+      createdMeetings = await db
+        .insert(meetings)
+        .values(meetingData)
+        .returning();
       console.log(`✅ Created ${createdMeetings.length} demo meetings`);
     }
 
@@ -135,7 +140,7 @@ export async function POST() {
     });
   } catch (error) {
     console.error('Error creating demo data:', error);
-    
+
     return NextResponse.json(
       {
         success: false,

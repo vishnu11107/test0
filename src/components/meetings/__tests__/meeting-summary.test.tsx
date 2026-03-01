@@ -22,7 +22,9 @@ describe('MeetingSummary', () => {
       fullSummary: 'This is the full summary text',
     });
 
-    render(<MeetingSummary summary={structuredSummary} meeting={mockMeeting} />);
+    render(
+      <MeetingSummary summary={structuredSummary} meeting={mockMeeting} />
+    );
 
     expect(screen.getByText('Meeting Summary')).toBeInTheDocument();
     expect(screen.getByText('Meeting was successful')).toBeInTheDocument();
@@ -66,7 +68,9 @@ describe('MeetingSummary', () => {
 
     const summary = 'Test summary';
 
-    render(<MeetingSummary summary={summary} meeting={meetingWithMissingData} />);
+    render(
+      <MeetingSummary summary={summary} meeting={meetingWithMissingData} />
+    );
 
     expect(screen.getAllByText('N/A')).toHaveLength(2); // For date and duration
     expect(screen.getByText('Unknown')).toBeInTheDocument(); // For agent
@@ -105,16 +109,22 @@ Meeting completed successfully
 
     render(<MeetingSummary summary={summary} meeting={mockMeeting} />);
 
-    expect(screen.getByText('Meeting completed successfully')).toBeInTheDocument();
+    expect(
+      screen.getByText('Meeting completed successfully')
+    ).toBeInTheDocument();
   });
 
   it('does not render empty sections', () => {
     const summaryWithoutSections = 'Just a plain summary';
 
-    render(<MeetingSummary summary={summaryWithoutSections} meeting={mockMeeting} />);
+    render(
+      <MeetingSummary summary={summaryWithoutSections} meeting={mockMeeting} />
+    );
 
     expect(screen.queryByText('Key Topics Discussed')).not.toBeInTheDocument();
     expect(screen.queryByText('Key Insights & Advice')).not.toBeInTheDocument();
-    expect(screen.queryByText('Action Items & Next Steps')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Action Items & Next Steps')
+    ).not.toBeInTheDocument();
   });
 });

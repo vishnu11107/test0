@@ -14,7 +14,7 @@ async function seed() {
   try {
     // Create demo user
     const hashedPassword = await bcrypt.hash('demo123', 10);
-    
+
     const [demoUser] = await db
       .insert(users)
       .values({
@@ -69,7 +69,9 @@ async function seed() {
         agentId: createdAgents[0].id,
         status: 'completed' as const,
         startedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-        endedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 30 * 60 * 1000), // 30 min duration
+        endedAt: new Date(
+          Date.now() - 2 * 24 * 60 * 60 * 1000 + 30 * 60 * 1000
+        ), // 30 min duration
         durationSeconds: 1800,
         summary:
           'Great conversation practice session focusing on everyday vocabulary and past tense conjugations. The user showed improvement in pronunciation and confidence.',
@@ -81,7 +83,9 @@ async function seed() {
         agentId: createdAgents[1].id,
         status: 'completed' as const,
         startedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
-        endedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 + 45 * 60 * 1000), // 45 min duration
+        endedAt: new Date(
+          Date.now() - 1 * 24 * 60 * 60 * 1000 + 45 * 60 * 1000
+        ), // 45 min duration
         durationSeconds: 2700,
         summary:
           'Comprehensive technical interview covering data structures and system design. Strong performance on algorithms, could improve on explaining trade-offs in system design decisions.',
@@ -95,7 +99,10 @@ async function seed() {
       },
     ];
 
-    const createdMeetings = await db.insert(meetings).values(meetingData).returning();
+    const createdMeetings = await db
+      .insert(meetings)
+      .values(meetingData)
+      .returning();
 
     console.log(`✅ Created ${createdMeetings.length} demo meetings`);
 

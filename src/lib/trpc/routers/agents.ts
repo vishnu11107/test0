@@ -7,14 +7,20 @@ import { nanoid } from 'nanoid';
 
 // Validation schemas
 export const createAgentSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(255, 'Name must be less than 255 characters'),
+  name: z
+    .string()
+    .min(1, 'Name is required')
+    .max(255, 'Name must be less than 255 characters'),
   instructions: z.string().min(1, 'Instructions are required'),
   avatarSeed: z.string().optional(),
 });
 
 export const updateAgentSchema = z.object({
   id: z.string(),
-  name: z.string().min(1, 'Name is required').max(255, 'Name must be less than 255 characters'),
+  name: z
+    .string()
+    .min(1, 'Name is required')
+    .max(255, 'Name must be less than 255 characters'),
   instructions: z.string().min(1, 'Instructions are required'),
   avatarSeed: z.string().optional(),
 });
@@ -44,11 +50,9 @@ export const agentsRouter = router({
 
       // Build where conditions
       const whereConditions = [eq(agents.userId, ctx.user.id)];
-      
+
       if (search) {
-        whereConditions.push(
-          sql`${agents.name} ILIKE ${`%${search}%`}`
-        );
+        whereConditions.push(sql`${agents.name} ILIKE ${`%${search}%`}`);
       }
 
       // Get total count
@@ -82,10 +86,7 @@ export const agentsRouter = router({
     .input(getAgentSchema)
     .query(async ({ input, ctx }) => {
       const agent = await ctx.db.query.agents.findFirst({
-        where: and(
-          eq(agents.id, input.id),
-          eq(agents.userId, ctx.user.id)
-        ),
+        where: and(eq(agents.id, input.id), eq(agents.userId, ctx.user.id)),
       });
 
       if (!agent) {
@@ -106,10 +107,7 @@ export const agentsRouter = router({
 
       // Check if agent with same name already exists for this user
       const existingAgent = await ctx.db.query.agents.findFirst({
-        where: and(
-          eq(agents.userId, ctx.user.id),
-          eq(agents.name, name)
-        ),
+        where: and(eq(agents.userId, ctx.user.id), eq(agents.name, name)),
       });
 
       if (existingAgent) {
@@ -145,10 +143,7 @@ export const agentsRouter = router({
 
       // Check if agent exists and belongs to user
       const existingAgent = await ctx.db.query.agents.findFirst({
-        where: and(
-          eq(agents.id, id),
-          eq(agents.userId, ctx.user.id)
-        ),
+        where: and(eq(agents.id, id), eq(agents.userId, ctx.user.id)),
       });
 
       if (!existingAgent) {
@@ -161,10 +156,7 @@ export const agentsRouter = router({
       // Check if another agent with the same name exists
       if (name !== existingAgent.name) {
         const duplicateAgent = await ctx.db.query.agents.findFirst({
-          where: and(
-            eq(agents.userId, ctx.user.id),
-            eq(agents.name, name)
-          ),
+          where: and(eq(agents.userId, ctx.user.id), eq(agents.name, name)),
         });
 
         if (duplicateAgent) {
@@ -198,10 +190,7 @@ export const agentsRouter = router({
 
       // Check if agent exists and belongs to user
       const existingAgent = await ctx.db.query.agents.findFirst({
-        where: and(
-          eq(agents.id, id),
-          eq(agents.userId, ctx.user.id)
-        ),
+        where: and(eq(agents.id, id), eq(agents.userId, ctx.user.id)),
       });
 
       if (!existingAgent) {
@@ -227,9 +216,7 @@ export const agentsRouter = router({
       }
 
       // Delete agent (cascade will handle related meetings)
-      await ctx.db
-        .delete(agents)
-        .where(eq(agents.id, id));
+      await ctx.db.delete(agents).where(eq(agents.id, id));
 
       return { success: true };
     }),

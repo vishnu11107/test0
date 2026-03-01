@@ -11,7 +11,11 @@ interface VideoLobbyProps {
   agentName: string;
 }
 
-export function VideoLobby({ onJoinCall, userName, agentName }: VideoLobbyProps) {
+export function VideoLobby({
+  onJoinCall,
+  userName,
+  agentName,
+}: VideoLobbyProps) {
   const displayName = userName || 'User';
   const [isCameraOn, setIsCameraOn] = useState(true);
   const [isMicOn, setIsMicOn] = useState(true);
@@ -40,7 +44,9 @@ export function VideoLobby({ onJoinCall, userName, agentName }: VideoLobbyProps)
         }
       } catch (err) {
         console.error('Error accessing media devices:', err);
-        setError('Unable to access camera or microphone. Please check your permissions.');
+        setError(
+          'Unable to access camera or microphone. Please check your permissions.'
+        );
       }
     }
 
@@ -92,7 +98,8 @@ export function VideoLobby({ onJoinCall, userName, agentName }: VideoLobbyProps)
           <div className="text-center">
             <h1 className="text-2xl font-bold">Ready to join?</h1>
             <p className="mt-2 text-gray-600">
-              You're about to meet with <span className="font-semibold">{agentName}</span>
+              You're about to meet with{' '}
+              <span className="font-semibold">{agentName}</span>
             </p>
           </div>
 
@@ -121,7 +128,9 @@ export function VideoLobby({ onJoinCall, userName, agentName }: VideoLobbyProps)
                           {displayName.charAt(0).toUpperCase()}
                         </span>
                       </div>
-                      <p className="mt-4 text-sm text-gray-300">Camera is off</p>
+                      <p className="mt-4 text-sm text-gray-300">
+                        Camera is off
+                      </p>
                     </div>
                   </div>
                 )}
@@ -151,7 +160,11 @@ export function VideoLobby({ onJoinCall, userName, agentName }: VideoLobbyProps)
               disabled={!stream}
               className="h-14 w-14 rounded-full p-0"
             >
-              {isMicOn ? <Mic className="h-6 w-6" /> : <MicOff className="h-6 w-6" />}
+              {isMicOn ? (
+                <Mic className="h-6 w-6" />
+              ) : (
+                <MicOff className="h-6 w-6" />
+              )}
             </Button>
           </div>
 

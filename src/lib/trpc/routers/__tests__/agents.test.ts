@@ -270,9 +270,7 @@ describe('Agents Router', () => {
       const ctx = createMockContext();
       const caller = agentsRouter.createCaller(ctx);
 
-      await expect(caller.remove({ id: 'agent-1' })).rejects.toThrow(
-        TRPCError
-      );
+      await expect(caller.remove({ id: 'agent-1' })).rejects.toThrow(TRPCError);
     });
   });
 });

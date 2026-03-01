@@ -1,9 +1,9 @@
 import { auth, type Session } from '@/lib/auth';
 import { db } from '@/lib/db';
 
-export async function createContext() {
+export async function createContext(opts: any) {
   const session = await auth.api.getSession({
-    headers: await import('next/headers').then((mod) => mod.headers()),
+    headers: opts.req.headers,
   });
 
   return {

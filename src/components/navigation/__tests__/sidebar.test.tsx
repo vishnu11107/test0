@@ -72,7 +72,7 @@ describe('Sidebar', () => {
     render(<Sidebar />);
 
     const menuButton = screen.getByRole('button');
-    
+
     // Get the sidebar container (the div with transform classes)
     const sidebarContainer = document.querySelector('.fixed.left-0.top-0');
     expect(sidebarContainer).toHaveClass('-translate-x-full');
@@ -91,7 +91,7 @@ describe('Sidebar', () => {
 
     const menuButton = screen.getByRole('button');
     const agentsLink = screen.getByRole('link', { name: /ai agents/i });
-    
+
     // Open mobile menu
     fireEvent.click(menuButton);
     const sidebarContainer = document.querySelector('.fixed.left-0.top-0');
@@ -106,7 +106,7 @@ describe('Sidebar', () => {
     render(<Sidebar />);
 
     const menuButton = screen.getByRole('button');
-    
+
     // Open mobile menu
     fireEvent.click(menuButton);
     const sidebarContainer = document.querySelector('.fixed.left-0.top-0');

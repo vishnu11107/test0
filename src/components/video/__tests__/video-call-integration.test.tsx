@@ -110,7 +110,9 @@ describe('Video Call Integration', () => {
 
       // Wait for call to initialize
       await waitFor(() => {
-        expect(screen.getByText(/meeting with test agent/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/meeting with test agent/i)
+        ).toBeInTheDocument();
       });
 
       // Verify AI agent connected
@@ -122,7 +124,9 @@ describe('Video Call Integration', () => {
 
       await waitFor(() => {
         expect(onCallEnd).toHaveBeenCalled();
-        expect(mockPush).toHaveBeenCalledWith('/dashboard/meetings/test-meeting-123');
+        expect(mockPush).toHaveBeenCalledWith(
+          '/dashboard/meetings/test-meeting-123'
+        );
       });
 
       unmountCall();
@@ -206,7 +210,8 @@ describe('Video Call Integration', () => {
       );
 
       await waitFor(() => {
-        const speakingIndicators = container.querySelectorAll('.animate-bounce');
+        const speakingIndicators =
+          container.querySelectorAll('.animate-bounce');
         expect(speakingIndicators.length).toBeGreaterThan(0);
       });
     });
@@ -318,7 +323,9 @@ describe('Video Call Integration', () => {
 
       // Verify muted indicator appears (SVG icon in the video overlay)
       await waitFor(() => {
-        const mutedIndicator = screen.getByRole('button', { name: /unmute microphone/i });
+        const mutedIndicator = screen.getByRole('button', {
+          name: /unmute microphone/i,
+        });
         expect(mutedIndicator).toBeInTheDocument();
       });
 
@@ -370,7 +377,9 @@ describe('Video Call Integration', () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByText(/unable to access camera or microphone/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/unable to access camera or microphone/i)
+        ).toBeInTheDocument();
       });
 
       // Join button should be disabled

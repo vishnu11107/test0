@@ -1,6 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { inngestFunctions } from '../functions';
-import { generateStructuredSummary, parseTranscript, transcriptToText } from '@/lib/post-call';
+import {
+  generateStructuredSummary,
+  parseTranscript,
+  transcriptToText,
+} from '@/lib/post-call';
 
 // Mock dependencies
 vi.mock('@/lib/post-call', () => ({
@@ -142,7 +146,9 @@ describe('Inngest Functions', () => {
         'Be helpful and polite'
       );
 
-      expect(summary.fullSummary).toBe('The user and agent exchanged greetings.');
+      expect(summary.fullSummary).toBe(
+        'The user and agent exchanged greetings.'
+      );
       expect(summary.keyTopics).toContain('Greeting');
       expect(generateStructuredSummary).toHaveBeenCalledWith(
         'user: Hello\nagent: Hi there',

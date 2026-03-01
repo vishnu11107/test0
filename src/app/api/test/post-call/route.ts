@@ -26,11 +26,16 @@ export async function POST(request: NextRequest) {
     const { transcript, agentInstructions } = body;
 
     const testTranscript = transcript || SAMPLE_TRANSCRIPT;
-    const testInstructions = agentInstructions || 'You are a business strategy consultant helping with product launches.';
+    const testInstructions =
+      agentInstructions ||
+      'You are a business strategy consultant helping with product launches.';
 
     console.log('Testing post-call processing...');
-    
-    const summary = await generateStructuredSummary(testTranscript, testInstructions);
+
+    const summary = await generateStructuredSummary(
+      testTranscript,
+      testInstructions
+    );
 
     return NextResponse.json({
       success: true,
@@ -40,7 +45,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Post-call processing test error:', error);
-    
+
     return NextResponse.json(
       {
         success: false,

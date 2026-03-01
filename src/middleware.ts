@@ -2,12 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // Define public routes that don't require authentication
-const publicRoutes = [
-  '/',
-  '/login',
-  '/register',
-  '/api/auth',
-];
+const publicRoutes = ['/', '/login', '/register', '/api/auth'];
 
 // Define routes that should redirect to dashboard if authenticated
 const authRoutes = ['/login', '/register'];
@@ -26,8 +21,8 @@ export function middleware(request: NextRequest) {
   }
 
   // Check if route is public
-  const isPublicRoute = publicRoutes.some((route) =>
-    pathname === route || pathname.startsWith(route)
+  const isPublicRoute = publicRoutes.some(
+    (route) => pathname === route || pathname.startsWith(route)
   );
 
   // Check if route is an auth route (login/register)

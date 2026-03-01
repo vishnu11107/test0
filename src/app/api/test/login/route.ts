@@ -10,7 +10,7 @@ import { eq } from 'drizzle-orm';
 export async function POST() {
   try {
     // Find or create the demo user
-    let demoUser = await db
+    const demoUser = await db
       .select()
       .from(users)
       .where(eq(users.email, 'demo@meetai.com'))
@@ -25,17 +25,19 @@ export async function POST() {
           email: 'demo@meetai.com',
           emailVerified: true,
           subscriptionTier: 'pro',
-          subscriptionExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          subscriptionExpiresAt: new Date(
+            Date.now() + 30 * 24 * 60 * 60 * 1000
+          ),
         })
         .returning();
     }
 
     // Create a simple session token (not secure, just for testing)
     const sessionToken = `test-session-${Date.now()}`;
-    
+
     // In a real app, you'd store this in a session store
     // For testing, we'll just return the user info
-    
+
     const response = NextResponse.json({
       success: true,
       message: 'Test login successful',
@@ -54,7 +56,7 @@ export async function POST() {
     return response;
   } catch (error) {
     console.error('Test login error:', error);
-    
+
     return NextResponse.json(
       {
         success: false,

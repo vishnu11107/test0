@@ -1,6 +1,6 @@
 /**
  * Inngest background job functions
- * 
+ *
  * Implements post-call processing jobs for transcript fetching,
  * parsing, and AI summary generation.
  */
@@ -9,15 +9,15 @@ import { inngest } from './client';
 import { db } from '@/lib/db';
 import { meetings } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
-import { 
-  parseTranscript, 
-  transcriptToText, 
-  generateStructuredSummary 
+import {
+  parseTranscript,
+  transcriptToText,
+  generateStructuredSummary,
 } from '@/lib/post-call';
 
 /**
  * Main post-call processing job
- * 
+ *
  * Orchestrates the complete post-call workflow:
  * 1. Fetch transcript from Stream
  * 2. Generate AI summary
@@ -64,7 +64,10 @@ export const processCallCompletion = inngest.createFunction(
 
     // Step 3: Generate AI summary
     const summaryData = await step.run('generate-summary', async () => {
-      return await generateStructuredSummary(transcript, meeting.agent.instructions);
+      return await generateStructuredSummary(
+        transcript,
+        meeting.agent.instructions
+      );
     });
 
     // Step 4: Update meeting with summary and mark as completed
@@ -91,7 +94,7 @@ export const processCallCompletion = inngest.createFunction(
 
 /**
  * Process transcript when it becomes available
- * 
+ *
  * This function is triggered when Stream notifies us that
  * a transcript is ready for processing.
  */
@@ -130,7 +133,7 @@ export const processTranscript = inngest.createFunction(
 
 /**
  * Generate AI summary for a meeting
- * 
+ *
  * Uses OpenAI to generate a comprehensive summary based on
  * the meeting transcript and agent context.
  */
@@ -162,7 +165,10 @@ export const generateSummary = inngest.createFunction(
 
     // Step 2: Generate summary using OpenAI
     const summaryData = await step.run('generate-ai-summary', async () => {
-      return await generateStructuredSummary(transcript, meeting.agent.instructions);
+      return await generateStructuredSummary(
+        transcript,
+        meeting.agent.instructions
+      );
     });
 
     // Step 3: Update meeting with summary and mark as completed
@@ -192,13 +198,13 @@ export const generateSummary = inngest.createFunction(
 async function fetchTranscriptFromUrl(transcriptUrl: string): Promise<string> {
   try {
     const response = await fetch(transcriptUrl);
-    
+
     if (!response.ok) {
       throw new Error(`Failed to fetch transcript: ${response.statusText}`);
     }
 
     const transcriptData = await response.json();
-    
+
     // Parse transcript using utility function and convert to text
     const parsedTranscript = parseTranscript(transcriptData);
     return transcriptToText(parsedTranscript);
@@ -219,7 +225,7 @@ export const testIntegration = inngest.createFunction(
   { event: 'test/integration' },
   async ({ event }) => {
     console.log('Test integration function executed:', event.data);
-    
+
     return {
       success: true,
       message: 'Test function executed successfully',

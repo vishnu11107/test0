@@ -15,7 +15,7 @@ interface LobbyPageProps {
 export default function LobbyPage({ params }: LobbyPageProps) {
   const router = useRouter();
   const { id } = use(params);
-  
+
   const { data: meeting, isLoading } = trpc.meetings.getOne.useQuery({
     id,
   });

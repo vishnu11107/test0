@@ -69,7 +69,7 @@ describe('TranscriptViewer', () => {
 
     expect(screen.getByText('Failed to load transcript')).toBeInTheDocument();
     expect(screen.getByText('Failed to load transcript')).toBeInTheDocument();
-    
+
     const tryAgainButton = screen.getByRole('button', { name: /try again/i });
     fireEvent.click(tryAgainButton);
     expect(mockRefetch).toHaveBeenCalled();
@@ -86,7 +86,9 @@ describe('TranscriptViewer', () => {
     render(<TranscriptViewer meetingId="test-meeting-id" />);
 
     expect(screen.getByText('No transcript available')).toBeInTheDocument();
-    expect(screen.getByText(/transcript will be available after/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/transcript will be available after/i)
+    ).toBeInTheDocument();
   });
 
   it('renders transcript entries correctly', () => {
@@ -101,8 +103,14 @@ describe('TranscriptViewer', () => {
 
     expect(screen.getByText('Meeting Transcript')).toBeInTheDocument();
     expect(screen.getByText('Hello, how are you today?')).toBeInTheDocument();
-    expect(screen.getByText('I am doing well, thank you for asking. How can I help you?')).toBeInTheDocument();
-    expect(screen.getByText('I need help with my project planning.')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'I am doing well, thank you for asking. How can I help you?'
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('I need help with my project planning.')
+    ).toBeInTheDocument();
   });
 
   it('displays speaker badges correctly', () => {
@@ -117,7 +125,7 @@ describe('TranscriptViewer', () => {
 
     const youBadges = screen.getAllByText('You');
     const agentBadges = screen.getAllByText('AI Agent');
-    
+
     expect(youBadges).toHaveLength(2); // Two user messages
     expect(agentBadges).toHaveLength(1); // One agent message
   });
@@ -139,11 +147,13 @@ describe('TranscriptViewer', () => {
 
   it('handles search functionality', async () => {
     const user = userEvent.setup();
-    
+
     // Mock the query to return different results based on search
     const mockUseQuery = vi.fn();
-    (trpc.meetings.getTranscript.useQuery as any).mockImplementation(mockUseQuery);
-    
+    (trpc.meetings.getTranscript.useQuery as any).mockImplementation(
+      mockUseQuery
+    );
+
     // Initial render without search
     mockUseQuery.mockReturnValue({
       data: mockTranscriptData,
@@ -155,24 +165,27 @@ describe('TranscriptViewer', () => {
     render(<TranscriptViewer meetingId="test-meeting-id" />);
 
     const searchInput = screen.getByPlaceholderText('Search transcript...');
-    
+
     // Type in search box
     await user.type(searchInput, 'project');
 
     // Wait for debounced search
-    await waitFor(() => {
-      expect(mockUseQuery).toHaveBeenCalledWith(
-        expect.objectContaining({
-          search: 'project',
-        }),
-        expect.any(Object)
-      );
-    }, { timeout: 500 });
+    await waitFor(
+      () => {
+        expect(mockUseQuery).toHaveBeenCalledWith(
+          expect.objectContaining({
+            search: 'project',
+          }),
+          expect.any(Object)
+        );
+      },
+      { timeout: 500 }
+    );
   });
 
   it('filters by speaker correctly', async () => {
     const user = userEvent.setup();
-    
+
     (trpc.meetings.getTranscript.useQuery as any).mockReturnValue({
       data: mockTranscriptData,
       isLoading: false,
@@ -188,13 +201,19 @@ describe('TranscriptViewer', () => {
 
     // Should only show user messages
     expect(screen.getByText('Hello, how are you today?')).toBeInTheDocument();
-    expect(screen.getByText('I need help with my project planning.')).toBeInTheDocument();
-    expect(screen.queryByText('I am doing well, thank you for asking. How can I help you?')).not.toBeInTheDocument();
+    expect(
+      screen.getByText('I need help with my project planning.')
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        'I am doing well, thank you for asking. How can I help you?'
+      )
+    ).not.toBeInTheDocument();
   });
 
   it('exports transcript correctly', async () => {
     const user = userEvent.setup();
-    
+
     // Mock URL.createObjectURL and related functions
     const mockCreateObjectURL = vi.fn(() => 'mock-url');
     const mockRevokeObjectURL = vi.fn();
@@ -210,7 +229,7 @@ describe('TranscriptViewer', () => {
     const mockCreateElement = vi.fn(() => mockAnchor);
     const mockAppendChild = vi.fn();
     const mockRemoveChild = vi.fn();
-    
+
     document.createElement = mockCreateElement as any;
     document.body.appendChild = mockAppendChild as any;
     document.body.removeChild = mockRemoveChild as any;

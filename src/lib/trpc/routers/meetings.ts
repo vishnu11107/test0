@@ -1,27 +1,33 @@
 import { z } from 'zod';
 import { router, protectedProcedure } from '../init';
 import { meetings, agents } from '@/lib/db/schema';
-import { eq, and, sql, desc, count, or } from 'drizzle-orm';
+import { eq, and, sql, desc, count } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { nanoid } from 'nanoid';
 import { createStreamCall, generateStreamToken } from '@/lib/stream';
-import { 
-  parseTranscript, 
-  transcriptToText, 
+import {
+  parseTranscript,
+  transcriptToText,
   answerMeetingQuestion,
   searchTranscript,
-  getTranscriptByTimeRange 
+  getTranscriptByTimeRange,
 } from '@/lib/post-call';
 
 // Validation schemas
 export const createMeetingSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(255, 'Name must be less than 255 characters'),
+  name: z
+    .string()
+    .min(1, 'Name is required')
+    .max(255, 'Name must be less than 255 characters'),
   agentId: z.string().min(1, 'Agent is required'),
 });
 
 export const updateMeetingSchema = z.object({
   id: z.string(),
-  name: z.string().min(1, 'Name is required').max(255, 'Name must be less than 255 characters'),
+  name: z
+    .string()
+    .min(1, 'Name is required')
+    .max(255, 'Name must be less than 255 characters'),
 });
 
 export const getMeetingSchema = z.object({
@@ -36,13 +42,21 @@ export const getManyMeetingsSchema = z.object({
   page: z.number().min(1).default(1),
   limit: z.number().min(1).max(100).default(10),
   search: z.string().optional(),
-  status: z.enum(['upcoming', 'active', 'completed', 'processing', 'cancelled']).optional(),
+  status: z
+    .enum(['upcoming', 'active', 'completed', 'processing', 'cancelled'])
+    .optional(),
   agentId: z.string().optional(),
 });
 
 export const updateMeetingStatusSchema = z.object({
   id: z.string(),
-  status: z.enum(['upcoming', 'active', 'completed', 'processing', 'cancelled']),
+  status: z.enum([
+    'upcoming',
+    'active',
+    'completed',
+    'processing',
+    'cancelled',
+  ]),
 });
 
 export const generateTokenSchema = z.object({
@@ -71,7 +85,10 @@ const VALID_STATUS_TRANSITIONS: Record<string, string[]> = {
 };
 
 // Helper function to validate status transitions
-function isValidStatusTransition(currentStatus: string, newStatus: string): boolean {
+function isValidStatusTransition(
+  currentStatus: string,
+  newStatus: string
+): boolean {
   const allowedTransitions = VALID_STATUS_TRANSITIONS[currentStatus] || [];
   return allowedTransitions.includes(newStatus);
 }
@@ -87,7 +104,7 @@ export const meetingsRouter = router({
 
       // Build where conditions
       const whereConditions = [eq(meetings.userId, ctx.user.id)];
-      
+
       if (status) {
         whereConditions.push(eq(meetings.status, status));
       }
@@ -97,9 +114,7 @@ export const meetingsRouter = router({
       }
 
       if (search) {
-        whereConditions.push(
-          sql`${meetings.name} ILIKE ${`%${search}%`}`
-        );
+        whereConditions.push(sql`${meetings.name} ILIKE ${`%${search}%`}`);
       }
 
       // Get total count
@@ -154,6 +169,7 @@ export const meetingsRouter = router({
   getOne: protectedProcedure
     .input(getMeetingSchema)
     .query(async ({ input, ctx }) => {
+      console.log('getOne called', { inputId: input.id, userId: ctx.user.id });
       const result = await ctx.db
         .select({
           id: meetings.id,
@@ -179,13 +195,10 @@ export const meetingsRouter = router({
         })
         .from(meetings)
         .leftJoin(agents, eq(meetings.agentId, agents.id))
-        .where(
-          and(
-            eq(meetings.id, input.id),
-            eq(meetings.userId, ctx.user.id)
-          )
-        )
+        .where(and(eq(meetings.id, input.id), eq(meetings.userId, ctx.user.id)))
         .limit(1);
+
+      console.log('getOne result', result);
 
       if (!result || result.length === 0) {
         throw new TRPCError({
@@ -205,10 +218,7 @@ export const meetingsRouter = router({
 
       // Verify agent exists and belongs to user
       const agent = await ctx.db.query.agents.findFirst({
-        where: and(
-          eq(agents.id, agentId),
-          eq(agents.userId, ctx.user.id)
-        ),
+        where: and(eq(agents.id, agentId), eq(agents.userId, ctx.user.id)),
       });
 
       if (!agent) {
@@ -224,7 +234,7 @@ export const meetingsRouter = router({
       // Create Stream call
       try {
         const callId = `meeting-${meetingId}`;
-        
+
         // Create call in Stream
         await createStreamCall(callId, ctx.user.id, {
           meetingId,
@@ -263,10 +273,7 @@ export const meetingsRouter = router({
 
       // Check if meeting exists and belongs to user
       const existingMeeting = await ctx.db.query.meetings.findFirst({
-        where: and(
-          eq(meetings.id, id),
-          eq(meetings.userId, ctx.user.id)
-        ),
+        where: and(eq(meetings.id, id), eq(meetings.userId, ctx.user.id)),
       });
 
       if (!existingMeeting) {
@@ -277,7 +284,10 @@ export const meetingsRouter = router({
       }
 
       // Don't allow updates to active or completed meetings
-      if (existingMeeting.status === 'active' || existingMeeting.status === 'completed') {
+      if (
+        existingMeeting.status === 'active' ||
+        existingMeeting.status === 'completed'
+      ) {
         throw new TRPCError({
           code: 'PRECONDITION_FAILED',
           message: 'Cannot update active or completed meetings',
@@ -305,10 +315,7 @@ export const meetingsRouter = router({
 
       // Check if meeting exists and belongs to user
       const existingMeeting = await ctx.db.query.meetings.findFirst({
-        where: and(
-          eq(meetings.id, id),
-          eq(meetings.userId, ctx.user.id)
-        ),
+        where: and(eq(meetings.id, id), eq(meetings.userId, ctx.user.id)),
       });
 
       if (!existingMeeting) {
@@ -339,10 +346,11 @@ export const meetingsRouter = router({
 
       if (newStatus === 'processing' && !existingMeeting.endedAt) {
         updateData.endedAt = new Date();
-        
+
         // Calculate duration if we have both start and end times
         if (existingMeeting.startedAt) {
-          const durationMs = updateData.endedAt.getTime() - existingMeeting.startedAt.getTime();
+          const durationMs =
+            updateData.endedAt.getTime() - existingMeeting.startedAt.getTime();
           updateData.durationSeconds = Math.floor(durationMs / 1000);
         }
       }
@@ -365,10 +373,7 @@ export const meetingsRouter = router({
 
       // Check if meeting exists and belongs to user
       const existingMeeting = await ctx.db.query.meetings.findFirst({
-        where: and(
-          eq(meetings.id, id),
-          eq(meetings.userId, ctx.user.id)
-        ),
+        where: and(eq(meetings.id, id), eq(meetings.userId, ctx.user.id)),
       });
 
       if (!existingMeeting) {
@@ -387,9 +392,7 @@ export const meetingsRouter = router({
       }
 
       // Delete meeting
-      await ctx.db
-        .delete(meetings)
-        .where(eq(meetings.id, id));
+      await ctx.db.delete(meetings).where(eq(meetings.id, id));
 
       return { success: true };
     }),
@@ -493,9 +496,10 @@ export const meetingsRouter = router({
           entries: transcript,
           totalEntries: transcript.length,
           searchTerm: search,
-          timeRange: startTime !== undefined && endTime !== undefined 
-            ? { startTime, endTime } 
-            : null,
+          timeRange:
+            startTime !== undefined && endTime !== undefined
+              ? { startTime, endTime }
+              : null,
         };
       } catch (error) {
         console.error('Error fetching transcript:', error);

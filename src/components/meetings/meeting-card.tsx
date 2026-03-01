@@ -1,7 +1,12 @@
 'use client';
 
 import * as React from 'react';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -25,14 +30,40 @@ interface MeetingCardProps {
 }
 
 const statusConfig = {
-  upcoming: { label: 'Upcoming', variant: 'default' as const, color: 'bg-blue-500' },
-  active: { label: 'Active', variant: 'default' as const, color: 'bg-green-500' },
-  processing: { label: 'Processing', variant: 'secondary' as const, color: 'bg-yellow-500' },
-  completed: { label: 'Completed', variant: 'secondary' as const, color: 'bg-gray-500' },
-  cancelled: { label: 'Cancelled', variant: 'secondary' as const, color: 'bg-red-500' },
+  upcoming: {
+    label: 'Upcoming',
+    variant: 'default' as const,
+    color: 'bg-blue-500',
+  },
+  active: {
+    label: 'Active',
+    variant: 'default' as const,
+    color: 'bg-green-500',
+  },
+  processing: {
+    label: 'Processing',
+    variant: 'secondary' as const,
+    color: 'bg-yellow-500',
+  },
+  completed: {
+    label: 'Completed',
+    variant: 'secondary' as const,
+    color: 'bg-gray-500',
+  },
+  cancelled: {
+    label: 'Cancelled',
+    variant: 'secondary' as const,
+    color: 'bg-red-500',
+  },
 };
 
-export function MeetingCard({ meeting, onEdit, onDelete, onJoin, onViewDetails }: MeetingCardProps) {
+export function MeetingCard({
+  meeting,
+  onEdit,
+  onDelete,
+  onJoin,
+  onViewDetails,
+}: MeetingCardProps) {
   const avatarUrl = meeting.agent?.avatarSeed
     ? `https://api.dicebear.com/7.x/bottts/svg?seed=${meeting.agent.avatarSeed}`
     : undefined;
@@ -43,7 +74,7 @@ export function MeetingCard({ meeting, onEdit, onDelete, onJoin, onViewDetails }
   const canDelete = meeting.status !== 'active';
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="transition-shadow hover:shadow-md">
       <CardHeader className="flex flex-row items-center gap-4 pb-4">
         <Avatar className="h-12 w-12">
           <AvatarImage src={avatarUrl} alt={meeting.agent?.name || 'Agent'} />
@@ -51,14 +82,14 @@ export function MeetingCard({ meeting, onEdit, onDelete, onJoin, onViewDetails }
             {meeting.agent?.name?.substring(0, 2).toUpperCase() || 'AI'}
           </AvatarFallback>
         </Avatar>
-        <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-lg truncate">{meeting.name}</h3>
-          <p className="text-sm text-muted-foreground truncate">
+        <div className="min-w-0 flex-1">
+          <h3 className="truncate text-lg font-semibold">{meeting.name}</h3>
+          <p className="truncate text-sm text-muted-foreground">
             with {meeting.agent?.name || 'Unknown Agent'}
           </p>
         </div>
         <Badge variant={status.variant} className="shrink-0">
-          <div className={`w-2 h-2 rounded-full ${status.color} mr-2`} />
+          <div className={`h-2 w-2 rounded-full ${status.color} mr-2`} />
           {status.label}
         </Badge>
       </CardHeader>
@@ -66,14 +97,18 @@ export function MeetingCard({ meeting, onEdit, onDelete, onJoin, onViewDetails }
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Calendar className="h-4 w-4" />
           <span>
-            Created {formatDistanceToNow(new Date(meeting.createdAt), { addSuffix: true })}
+            Created{' '}
+            {formatDistanceToNow(new Date(meeting.createdAt), {
+              addSuffix: true,
+            })}
           </span>
         </div>
         {meeting.durationSeconds && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Clock className="h-4 w-4" />
             <span>
-              Duration: {Math.floor(meeting.durationSeconds / 60)}m {meeting.durationSeconds % 60}s
+              Duration: {Math.floor(meeting.durationSeconds / 60)}m{' '}
+              {meeting.durationSeconds % 60}s
             </span>
           </div>
         )}
@@ -86,7 +121,7 @@ export function MeetingCard({ meeting, onEdit, onDelete, onJoin, onViewDetails }
             className="flex-1"
             onClick={() => onJoin(meeting)}
           >
-            <Video className="h-4 w-4 mr-2" />
+            <Video className="mr-2 h-4 w-4" />
             {meeting.status === 'active' ? 'Rejoin' : 'Start'}
           </Button>
         )}
