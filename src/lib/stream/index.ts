@@ -1,6 +1,6 @@
 /**
  * Stream Video SDK integration
- * 
+ *
  * This module provides server-side integration with Stream Video SDK.
  * Uses REST API for server-side operations and JWT for token generation.
  */
@@ -26,7 +26,10 @@ function getStreamCredentials() {
 /**
  * Generate a Stream user token using JWT
  */
-export function generateStreamToken(userId: string, validityInSeconds: number = 3600): string {
+export function generateStreamToken(
+  userId: string,
+  validityInSeconds: number = 3600
+): string {
   const { apiSecret } = getStreamCredentials();
 
   // Subtract 30 seconds from current time to account for clock skew
@@ -75,9 +78,9 @@ async function streamApiRequest(
   // Add API key to URL
   const separator = endpoint.includes('?') ? '&' : '?';
   const url = `${STREAM_API_BASE_URL}${endpoint}${separator}api_key=${apiKey}`;
-  
+
   const headers: Record<string, string> = {
-    'Authorization': `Bearer ${token}`,
+    Authorization: `Bearer ${token}`,
     'Stream-Auth-Type': 'jwt',
     'X-Stream-Client': `meet-ai-platform`,
   };
@@ -112,9 +115,7 @@ export async function createStreamCall(
     await streamApiRequest(`/video/call/default/${callId}`, 'POST', {
       data: {
         created_by_id: userId,
-        members: [
-          { user_id: userId, role: 'host' },
-        ],
+        members: [{ user_id: userId, role: 'host' }],
         custom: metadata,
         settings_override: {
           recording: {
@@ -144,9 +145,7 @@ export async function addCallParticipant(
 ): Promise<void> {
   try {
     await streamApiRequest(`/video/call/default/${callId}/members`, 'POST', {
-      update_members: [
-        { user_id: userId, role },
-      ],
+      update_members: [{ user_id: userId, role }],
     });
   } catch (error) {
     console.error('Error adding call participant:', error);
@@ -159,7 +158,11 @@ export async function addCallParticipant(
  */
 export async function endCall(callId: string): Promise<void> {
   try {
-    await streamApiRequest(`/video/call/default/${callId}/mark_ended`, 'POST', {});
+    await streamApiRequest(
+      `/video/call/default/${callId}/mark_ended`,
+      'POST',
+      {}
+    );
   } catch (error) {
     console.error('Error ending call:', error);
     throw error;

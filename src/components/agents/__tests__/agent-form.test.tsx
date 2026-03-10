@@ -20,7 +20,9 @@ describe('AgentForm', () => {
 
     expect(screen.getByLabelText(/agent name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/instructions/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /create agent/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /create agent/i })
+    ).toBeInTheDocument();
   });
 
   it('renders edit form with agent data', () => {
@@ -29,7 +31,9 @@ describe('AgentForm', () => {
 
     expect(screen.getByDisplayValue('Test Agent')).toBeInTheDocument();
     expect(screen.getByDisplayValue('Test instructions')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /update agent/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /update agent/i })
+    ).toBeInTheDocument();
   });
 
   it('validates required fields', async () => {
@@ -41,7 +45,9 @@ describe('AgentForm', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/name is required/i)).toBeInTheDocument();
-      expect(screen.getByText(/instructions are required/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/instructions are required/i)
+      ).toBeInTheDocument();
     });
 
     expect(onSubmit).not.toHaveBeenCalled();
@@ -56,7 +62,9 @@ describe('AgentForm', () => {
     const submitButton = screen.getByRole('button', { name: /create agent/i });
 
     fireEvent.change(nameInput, { target: { value: 'New Agent' } });
-    fireEvent.change(instructionsInput, { target: { value: 'New instructions' } });
+    fireEvent.change(instructionsInput, {
+      target: { value: 'New instructions' },
+    });
     fireEvent.click(submitButton);
 
     await waitFor(() => {
@@ -85,7 +93,9 @@ describe('AgentForm', () => {
     const onSubmit = vi.fn();
     render(<AgentForm onSubmit={onSubmit} />);
 
-    const regenerateButton = screen.getByRole('button', { name: /regenerate avatar/i });
+    const regenerateButton = screen.getByRole('button', {
+      name: /regenerate avatar/i,
+    });
     fireEvent.click(regenerateButton);
 
     // Avatar should have a new seed (different from initial)
@@ -98,6 +108,8 @@ describe('AgentForm', () => {
 
     expect(screen.getByLabelText(/agent name/i)).toBeDisabled();
     expect(screen.getByLabelText(/instructions/i)).toBeDisabled();
-    expect(screen.getByRole('button', { name: /create agent/i })).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: /create agent/i })
+    ).toBeDisabled();
   });
 });

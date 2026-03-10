@@ -242,9 +242,9 @@ describe('Meetings Router', () => {
       const ctx = createMockContext();
       const caller = meetingsRouter.createCaller(ctx);
 
-      await expect(
-        caller.getOne({ id: 'non-existent-id' })
-      ).rejects.toThrow(TRPCError);
+      await expect(caller.getOne({ id: 'non-existent-id' })).rejects.toThrow(
+        TRPCError
+      );
     });
   });
 
@@ -451,9 +451,9 @@ describe('Meetings Router', () => {
       const ctx = createMockContext();
       const caller = meetingsRouter.createCaller(ctx);
 
-      await expect(
-        caller.remove({ id: 'meeting-1' })
-      ).rejects.toThrow(TRPCError);
+      await expect(caller.remove({ id: 'meeting-1' })).rejects.toThrow(
+        TRPCError
+      );
     });
   });
 

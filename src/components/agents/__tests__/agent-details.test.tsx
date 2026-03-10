@@ -59,7 +59,9 @@ describe('AgentDetails', () => {
     render(<AgentDetails agentId="agent-1" />);
 
     expect(screen.getByText('Language Tutor')).toBeInTheDocument();
-    expect(screen.getByText('Help users learn languages through conversation')).toBeInTheDocument();
+    expect(
+      screen.getByText('Help users learn languages through conversation')
+    ).toBeInTheDocument();
     expect(screen.getByText('AI Agent')).toBeInTheDocument();
     expect(screen.getByText('agent-1')).toBeInTheDocument();
     expect(screen.getByText('seed-1')).toBeInTheDocument();
@@ -118,8 +120,12 @@ describe('AgentDetails', () => {
 
     render(<AgentDetails agentId="agent-1" />);
 
-    expect(screen.queryByRole('button', { name: /edit/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /delete/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /edit/i })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /delete/i })
+    ).not.toBeInTheDocument();
   });
 
   it('displays avatar fallback', () => {

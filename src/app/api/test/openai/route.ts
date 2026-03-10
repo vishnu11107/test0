@@ -13,7 +13,8 @@ export async function GET() {
       messages: [
         {
           role: 'system',
-          content: 'You are a helpful assistant. Respond with a brief greeting.',
+          content:
+            'You are a helpful assistant. Respond with a brief greeting.',
         },
         {
           role: 'user',
@@ -35,7 +36,7 @@ export async function GET() {
     });
   } catch (error) {
     console.error('OpenAI test error:', error);
-    
+
     return NextResponse.json(
       {
         success: false,
@@ -56,7 +57,9 @@ export async function POST(request: NextRequest) {
       messages: [
         {
           role: 'system',
-          content: instructions || 'You are a helpful AI assistant. Have a natural conversation with the user. Keep responses conversational and engaging.',
+          content:
+            instructions ||
+            'You are a helpful AI assistant. Have a natural conversation with the user. Keep responses conversational and engaging.',
         },
         {
           role: 'user',
@@ -67,7 +70,9 @@ export async function POST(request: NextRequest) {
       temperature: 0.8,
     });
 
-    const response = completion.choices[0]?.message?.content || 'I apologize, but I couldn\'t generate a response. Could you try again?';
+    const response =
+      completion.choices[0]?.message?.content ||
+      "I apologize, but I couldn't generate a response. Could you try again?";
 
     return NextResponse.json({
       success: true,
@@ -77,12 +82,12 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('OpenAI chat error:', error);
-    
+
     return NextResponse.json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        response: 'I\'m having trouble connecting right now. Please try again.',
+        response: "I'm having trouble connecting right now. Please try again.",
       },
       { status: 500 }
     );

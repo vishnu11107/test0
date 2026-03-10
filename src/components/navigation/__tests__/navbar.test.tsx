@@ -4,7 +4,13 @@ import { Navbar } from '../navbar';
 
 // Mock GlobalSearch component to avoid tRPC dependency
 vi.mock('../global-search', () => ({
-  GlobalSearch: ({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) => (
+  GlobalSearch: ({
+    open,
+    onOpenChange,
+  }: {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+  }) => (
     <div data-testid="global-search" data-open={open}>
       <button onClick={() => onOpenChange(false)}>Close Search</button>
     </div>
@@ -60,7 +66,7 @@ describe('Navbar', () => {
 
     const notificationButton = screen.getByLabelText(/notifications/i);
     expect(notificationButton).toBeInTheDocument();
-    
+
     // Check for notification badge
     const badge = document.querySelector('.bg-red-500');
     expect(badge).toBeInTheDocument();
@@ -96,7 +102,7 @@ describe('Navbar', () => {
     render(<Navbar />);
 
     const userButton = screen.getByRole('button', { name: /test user/i });
-    
+
     // Menu should not be visible initially
     expect(screen.queryByText('Profile')).not.toBeInTheDocument();
 

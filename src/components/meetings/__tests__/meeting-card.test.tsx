@@ -158,7 +158,9 @@ describe('MeetingCard', () => {
       status: 'completed' as const,
     };
     const onViewDetails = vi.fn();
-    render(<MeetingCard meeting={completedMeeting} onViewDetails={onViewDetails} />);
+    render(
+      <MeetingCard meeting={completedMeeting} onViewDetails={onViewDetails} />
+    );
 
     const detailsButton = screen.getByRole('button', { name: /view details/i });
     fireEvent.click(detailsButton);

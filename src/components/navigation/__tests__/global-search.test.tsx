@@ -46,7 +46,9 @@ describe('GlobalSearch', () => {
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByText('Search')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/search agents, meetings/i)).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(/search agents, meetings/i)
+    ).toBeInTheDocument();
   });
 
   it('does not render when closed', () => {
@@ -84,7 +86,7 @@ describe('GlobalSearch', () => {
     // Arrow down should work without errors
     fireEvent.keyDown(document, { key: 'ArrowDown' });
     fireEvent.keyDown(document, { key: 'ArrowUp' });
-    
+
     // Should not throw errors
     expect(true).toBe(true);
   });

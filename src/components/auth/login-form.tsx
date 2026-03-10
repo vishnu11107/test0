@@ -73,9 +73,7 @@ export function LoginForm() {
     <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle>Welcome back</CardTitle>
-        <CardDescription>
-          Sign in to your account to continue
-        </CardDescription>
+        <CardDescription>Sign in to your account to continue</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
@@ -123,7 +121,7 @@ export function LoginForm() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 w-full">
+          <div className="grid w-full grid-cols-2 gap-4">
             <Button
               type="button"
               variant="outline"

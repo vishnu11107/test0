@@ -25,18 +25,18 @@ describe('AIAgentDisplay', () => {
     render(<AIAgentDisplay agentName="Test Agent" isSpeaking={true} />);
 
     // Check for animated dots (speaking indicator)
-    const dots = screen.getAllByRole('generic').filter((el) =>
-      el.className.includes('animate-bounce')
-    );
+    const dots = screen
+      .getAllByRole('generic')
+      .filter((el) => el.className.includes('animate-bounce'));
     expect(dots.length).toBeGreaterThan(0);
   });
 
   it('does not display speaking indicator when agent is not speaking', () => {
     render(<AIAgentDisplay agentName="Test Agent" isSpeaking={false} />);
 
-    const dots = screen.queryAllByRole('generic').filter((el) =>
-      el.className.includes('animate-bounce')
-    );
+    const dots = screen
+      .queryAllByRole('generic')
+      .filter((el) => el.className.includes('animate-bounce'));
     expect(dots.length).toBe(0);
   });
 

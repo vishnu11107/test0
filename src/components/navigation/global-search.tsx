@@ -92,15 +92,17 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
   const router = useRouter();
 
   // Fetch agents and meetings for search
-  const { data: agents, isLoading: agentsLoading } = trpc.agents.getMany.useQuery(
-    { limit: 10, search: query },
-    { enabled: open && query.length > 0 }
-  );
+  const { data: agents, isLoading: agentsLoading } =
+    trpc.agents.getMany.useQuery(
+      { limit: 10, search: query },
+      { enabled: open && query.length > 0 }
+    );
 
-  const { data: meetings, isLoading: meetingsLoading } = trpc.meetings.getMany.useQuery(
-    { limit: 10, search: query },
-    { enabled: open && query.length > 0 }
-  );
+  const { data: meetings, isLoading: meetingsLoading } =
+    trpc.meetings.getMany.useQuery(
+      { limit: 10, search: query },
+      { enabled: open && query.length > 0 }
+    );
 
   // Combine and filter results
   const searchResults = useMemo(() => {
@@ -161,13 +163,13 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
-          setSelectedIndex((prev) => 
+          setSelectedIndex((prev) =>
             prev < searchResults.length - 1 ? prev + 1 : 0
           );
           break;
         case 'ArrowUp':
           e.preventDefault();
-          setSelectedIndex((prev) => 
+          setSelectedIndex((prev) =>
             prev > 0 ? prev - 1 : searchResults.length - 1
           );
           break;
@@ -211,7 +213,7 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl p-0">
-        <DialogHeader className="px-6 pt-6 pb-0">
+        <DialogHeader className="px-6 pb-0 pt-6">
           <DialogTitle className="flex items-center gap-2">
             <Search className="h-5 w-5" />
             Search
@@ -253,12 +255,12 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
                       key={result.id}
                       variant="ghost"
                       className={cn(
-                        'w-full justify-start h-auto p-3 text-left',
+                        'h-auto w-full justify-start p-3 text-left',
                         isSelected && 'bg-accent text-accent-foreground'
                       )}
                       onClick={() => handleSelect(result)}
                     >
-                      <div className="flex items-center space-x-3 w-full">
+                      <div className="flex w-full items-center space-x-3">
                         {result.avatarSeed ? (
                           <Avatar className="h-8 w-8">
                             <AvatarImage
@@ -275,9 +277,9 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
                           </div>
                         )}
 
-                        <div className="flex-1 min-w-0">
+                        <div className="min-w-0 flex-1">
                           <div className="flex items-center space-x-2">
-                            <span className="font-medium truncate">
+                            <span className="truncate font-medium">
                               {result.title}
                             </span>
                             {result.badge && (
@@ -287,7 +289,7 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
                             )}
                           </div>
                           {result.subtitle && (
-                            <p className="text-sm text-muted-foreground truncate">
+                            <p className="truncate text-sm text-muted-foreground">
                               {result.subtitle}
                             </p>
                           )}
@@ -300,8 +302,8 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
                 })}
               </div>
               {query.length === 0 && (
-                <div className="py-4 px-6 text-sm text-muted-foreground border-t">
-                  <div className="flex items-center space-x-2 mb-2">
+                <div className="border-t px-6 py-4 text-sm text-muted-foreground">
+                  <div className="mb-2 flex items-center space-x-2">
                     <Command className="h-4 w-4" />
                     <span>Quick navigation</span>
                   </div>
@@ -314,8 +316,8 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
               No results found for "{query}"
             </div>
           ) : (
-            <div className="py-4 px-6 text-sm text-muted-foreground">
-              <div className="flex items-center space-x-2 mb-2">
+            <div className="px-6 py-4 text-sm text-muted-foreground">
+              <div className="mb-2 flex items-center space-x-2">
                 <Command className="h-4 w-4" />
                 <span>Quick navigation</span>
               </div>

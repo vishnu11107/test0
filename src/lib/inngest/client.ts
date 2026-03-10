@@ -1,6 +1,6 @@
 /**
  * Inngest client configuration
- * 
+ *
  * Configures the Inngest client for background job processing.
  */
 
@@ -40,7 +40,7 @@ export interface SummaryGenerationEvent {
 }
 
 // Union type for all events
-export type InngestEvents = 
+export type InngestEvents =
   | MeetingProcessingEvent
   | TranscriptProcessingEvent
   | SummaryGenerationEvent;

@@ -20,7 +20,9 @@ describe('LoginForm', () => {
 
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /sign in/i })
+    ).toBeInTheDocument();
   });
 
   it('validates required fields', async () => {
@@ -30,7 +32,9 @@ describe('LoginForm', () => {
     fireEvent.click(submitButton);
 
     const emailInput = screen.getByLabelText(/email/i) as HTMLInputElement;
-    const passwordInput = screen.getByLabelText(/^password$/i) as HTMLInputElement;
+    const passwordInput = screen.getByLabelText(
+      /^password$/i
+    ) as HTMLInputElement;
 
     expect(emailInput.validity.valid).toBe(false);
     expect(passwordInput.validity.valid).toBe(false);

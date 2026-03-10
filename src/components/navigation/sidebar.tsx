@@ -81,10 +81,14 @@ export function Sidebar({ className }: SidebarProps) {
       <Button
         variant="ghost"
         size="sm"
-        className="fixed top-4 left-4 z-50 md:hidden"
+        className="fixed left-4 top-4 z-50 md:hidden"
         onClick={() => setIsMobileOpen(!isMobileOpen)}
       >
-        {isMobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        {isMobileOpen ? (
+          <X className="h-5 w-5" />
+        ) : (
+          <Menu className="h-5 w-5" />
+        )}
       </Button>
 
       {/* Mobile overlay */}
@@ -98,14 +102,14 @@ export function Sidebar({ className }: SidebarProps) {
       {/* Sidebar */}
       <div
         className={cn(
-          'fixed left-0 top-0 z-40 h-full w-64 transform bg-background border-r transition-transform duration-200 ease-in-out md:relative md:translate-x-0',
+          'fixed left-0 top-0 z-40 h-full w-64 transform border-r bg-background transition-transform duration-200 ease-in-out md:relative md:translate-x-0',
           isMobileOpen ? 'translate-x-0' : '-translate-x-full',
           className
         )}
       >
         <div className="flex h-full flex-col">
           {/* Logo/Brand */}
-          <div className="flex h-16 items-center px-6 border-b">
+          <div className="flex h-16 items-center border-b px-6">
             <Link href="/dashboard" className="flex items-center space-x-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                 <Bot className="h-5 w-5" />
@@ -144,14 +148,19 @@ export function Sidebar({ className }: SidebarProps) {
             <div className="border-t p-4">
               <div className="flex items-center space-x-3">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={user.image || undefined} alt={user.name || ''} />
-                  <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+                  <AvatarImage
+                    src={user.image || undefined}
+                    alt={user.name || ''}
+                  />
+                  <AvatarFallback className="text-xs">
+                    {initials}
+                  </AvatarFallback>
                 </Avatar>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">
                     {user.name || 'User'}
                   </p>
-                  <p className="text-xs text-muted-foreground truncate">
+                  <p className="truncate text-xs text-muted-foreground">
                     {user.email}
                   </p>
                 </div>

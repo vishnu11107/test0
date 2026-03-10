@@ -13,7 +13,7 @@ interface CallPageProps {
 
 export default function CallPage({ params }: CallPageProps) {
   const { id } = use(params);
-  
+
   const { data: meeting, isLoading } = trpc.meetings.getOne.useQuery({
     id,
   });
@@ -25,7 +25,11 @@ export default function CallPage({ params }: CallPageProps) {
 
   useEffect(() => {
     // Update meeting status to active when call page loads (only if it's upcoming)
-    if (meeting && meeting.status === 'upcoming' && !updateMeetingMutation.isPending) {
+    if (
+      meeting &&
+      meeting.status === 'upcoming' &&
+      !updateMeetingMutation.isPending
+    ) {
       updateMeetingMutation.mutate({
         id,
         status: 'active',
@@ -46,10 +50,21 @@ export default function CallPage({ params }: CallPageProps) {
   }
 
   if (!meeting || !user) {
+    console.error('Meeting or user not found:', {
+      meeting: !!meeting,
+      user: !!user,
+      id,
+    });
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-900">
         <div className="text-center">
-          <p className="text-gray-400">Meeting not found</p>
+          <p className="text-gray-400">
+            {!meeting
+              ? `Meeting not found (${id})`
+              : !user
+                ? 'User not authenticated'
+                : 'Unknown error'}
+          </p>
         </div>
       </div>
     );

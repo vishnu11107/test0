@@ -83,7 +83,9 @@ describe('CallInterface', () => {
       render(<CallInterface {...defaultProps} />);
 
       await waitFor(() => {
-        expect(screen.getByText(/meeting with test agent/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/meeting with test agent/i)
+        ).toBeInTheDocument();
       });
     });
 
@@ -185,7 +187,9 @@ describe('CallInterface', () => {
       fireEvent.click(endCallButton);
 
       await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith('/dashboard/meetings/test-meeting-123');
+        expect(mockPush).toHaveBeenCalledWith(
+          '/dashboard/meetings/test-meeting-123'
+        );
       });
     });
 

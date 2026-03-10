@@ -1,6 +1,6 @@
 /**
  * Stream Video webhook handler
- * 
+ *
  * Handles webhook events from Stream Video SDK for call lifecycle events.
  */
 
@@ -33,7 +33,10 @@ interface StreamWebhookEvent {
 /**
  * Validate Stream webhook signature
  */
-function validateStreamSignature(signature: string | null, body: string): boolean {
+function validateStreamSignature(
+  signature: string | null,
+  body: string
+): boolean {
   if (!signature) {
     return false;
   }
@@ -132,7 +135,9 @@ async function handleCallEnded(event: StreamWebhookEvent): Promise<void> {
       data: { meetingId: meeting.id },
     });
 
-    console.log(`Dispatched post-call processing job for meeting ${meeting.id}`);
+    console.log(
+      `Dispatched post-call processing job for meeting ${meeting.id}`
+    );
   } catch (error) {
     console.error('Error handling call ended:', error);
   }
@@ -141,7 +146,9 @@ async function handleCallEnded(event: StreamWebhookEvent): Promise<void> {
 /**
  * Handle transcription ready event
  */
-async function handleTranscriptionReady(event: StreamWebhookEvent & { transcription_url?: string }): Promise<void> {
+async function handleTranscriptionReady(
+  event: StreamWebhookEvent & { transcription_url?: string }
+): Promise<void> {
   try {
     const meeting = await db.query.meetings.findFirst({
       where: eq(meetings.streamCallId, event.call.id),
@@ -167,13 +174,15 @@ async function handleTranscriptionReady(event: StreamWebhookEvent & { transcript
       // Dispatch transcript processing job
       await inngest.send({
         name: 'meetings/process-transcript',
-        data: { 
+        data: {
           meetingId: meeting.id,
           transcriptUrl: event.transcription_url,
         },
       });
 
-      console.log(`Dispatched transcript processing job for meeting ${meeting.id}`);
+      console.log(
+        `Dispatched transcript processing job for meeting ${meeting.id}`
+      );
     }
   } catch (error) {
     console.error('Error handling transcription ready:', error);
@@ -183,7 +192,9 @@ async function handleTranscriptionReady(event: StreamWebhookEvent & { transcript
 /**
  * Handle recording ready event
  */
-async function handleRecordingReady(event: StreamWebhookEvent & { recording_url?: string }): Promise<void> {
+async function handleRecordingReady(
+  event: StreamWebhookEvent & { recording_url?: string }
+): Promise<void> {
   try {
     const meeting = await db.query.meetings.findFirst({
       where: eq(meetings.streamCallId, event.call.id),
@@ -217,19 +228,17 @@ async function handleRecordingReady(event: StreamWebhookEvent & { recording_url?
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     // Get signature from headers
-    const signature = request.headers.get('x-stream-signature') || 
-                     request.headers.get('stream-signature');
-    
+    const signature =
+      request.headers.get('x-stream-signature') ||
+      request.headers.get('stream-signature');
+
     // Get raw body
     const body = await request.text();
 
     // Validate signature
     if (!validateStreamSignature(signature, body)) {
       console.error('Invalid webhook signature');
-      return NextResponse.json(
-        { error: 'Invalid signature' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
     }
 
     // Parse event
@@ -242,19 +251,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       case 'call.session_started':
         await handleCallStarted(event);
         break;
-      
+
       case 'call.session_ended':
         await handleCallEnded(event);
         break;
-      
+
       case 'call.transcription_ready':
         await handleTranscriptionReady(event as any);
         break;
-      
+
       case 'call.recording_ready':
         await handleRecordingReady(event as any);
         break;
-      
+
       default:
         console.log(`Unhandled webhook event type: ${event.type}`);
     }
@@ -262,7 +271,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error processing webhook:', error);
-    
+
     // Return 200 to prevent webhook retries for parsing errors
     return NextResponse.json(
       { error: 'Internal server error' },

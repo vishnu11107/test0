@@ -29,16 +29,40 @@ interface MeetingDetailsProps {
 }
 
 const statusConfig = {
-  upcoming: { label: 'Upcoming', variant: 'default' as const, color: 'bg-blue-500' },
-  active: { label: 'Active', variant: 'default' as const, color: 'bg-green-500' },
-  processing: { label: 'Processing', variant: 'secondary' as const, color: 'bg-yellow-500' },
-  completed: { label: 'Completed', variant: 'secondary' as const, color: 'bg-gray-500' },
-  cancelled: { label: 'Cancelled', variant: 'secondary' as const, color: 'bg-red-500' },
+  upcoming: {
+    label: 'Upcoming',
+    variant: 'default' as const,
+    color: 'bg-blue-500',
+  },
+  active: {
+    label: 'Active',
+    variant: 'default' as const,
+    color: 'bg-green-500',
+  },
+  processing: {
+    label: 'Processing',
+    variant: 'secondary' as const,
+    color: 'bg-yellow-500',
+  },
+  completed: {
+    label: 'Completed',
+    variant: 'secondary' as const,
+    color: 'bg-gray-500',
+  },
+  cancelled: {
+    label: 'Cancelled',
+    variant: 'secondary' as const,
+    color: 'bg-red-500',
+  },
 };
 
 export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
   const router = useRouter();
-  const { data: meeting, isLoading, error } = trpc.meetings.getOne.useQuery({ id: meetingId });
+  const {
+    data: meeting,
+    isLoading,
+    error,
+  } = trpc.meetings.getOne.useQuery({ id: meetingId });
 
   if (isLoading) {
     return (
@@ -50,7 +74,7 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
 
   if (error || !meeting) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 gap-4">
+      <div className="flex flex-col items-center justify-center gap-4 py-12">
         <AlertCircle className="h-12 w-12 text-destructive" />
         <p className="text-sm text-muted-foreground">
           {error?.message || 'Meeting not found'}
@@ -72,7 +96,7 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div className="flex items-center gap-4">
           <Avatar className="h-16 w-16">
             <AvatarImage src={avatarUrl} alt={meeting.agent?.name || 'Agent'} />
@@ -81,7 +105,9 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
             </AvatarFallback>
           </Avatar>
           <div>
-            <h2 className="text-3xl font-bold tracking-tight">{meeting.name}</h2>
+            <h2 className="text-3xl font-bold tracking-tight">
+              {meeting.name}
+            </h2>
             <p className="text-muted-foreground">
               with {meeting.agent?.name || 'Unknown Agent'}
             </p>
@@ -89,12 +115,18 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
         </div>
         <div className="flex gap-2">
           <Badge variant={status.variant}>
-            <div className={`w-2 h-2 rounded-full ${status.color} mr-2`} />
+            <div className={`h-2 w-2 rounded-full ${status.color} mr-2`} />
             {status.label}
           </Badge>
           {canJoin && (
-            <Button onClick={() => router.push(`/dashboard/meetings/${meeting.id}/${meeting.status === 'active' ? 'call' : 'lobby'}` as any)}>
-              <Video className="h-4 w-4 mr-2" />
+            <Button
+              onClick={() =>
+                router.push(
+                  `/dashboard/meetings/${meeting.id}/${meeting.status === 'active' ? 'call' : 'lobby'}` as any
+                )
+              }
+            >
+              <Video className="mr-2 h-4 w-4" />
               {meeting.status === 'active' ? 'Rejoin Call' : 'Start Call'}
             </Button>
           )}
@@ -106,7 +138,7 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
         <CardHeader>
           <CardTitle>Meeting Information</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex items-center gap-3">
             <Calendar className="h-5 w-5 text-muted-foreground" />
             <div>
@@ -147,7 +179,8 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
               <div>
                 <p className="text-sm font-medium">Duration</p>
                 <p className="text-sm text-muted-foreground">
-                  {Math.floor(meeting.durationSeconds / 60)}m {meeting.durationSeconds % 60}s
+                  {Math.floor(meeting.durationSeconds / 60)}m{' '}
+                  {meeting.durationSeconds % 60}s
                 </p>
               </div>
             </div>
@@ -191,18 +224,21 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
             <CardContent className="space-y-4">
               <div className="flex items-center gap-4">
                 <Avatar className="h-16 w-16">
-                  <AvatarImage src={avatarUrl} alt={meeting.agent?.name || 'Agent'} />
+                  <AvatarImage
+                    src={avatarUrl}
+                    alt={meeting.agent?.name || 'Agent'}
+                  />
                   <AvatarFallback>
                     {meeting.agent?.name?.substring(0, 2).toUpperCase() || 'AI'}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-semibold text-lg">{meeting.agent?.name}</p>
+                  <p className="text-lg font-semibold">{meeting.agent?.name}</p>
                   <Badge variant="secondary">AI Agent</Badge>
                 </div>
               </div>
               <div>
-                <p className="text-sm font-medium mb-2">Instructions</p>
+                <p className="mb-2 text-sm font-medium">Instructions</p>
                 <p className="text-sm text-muted-foreground">
                   {meeting.agent?.instructions || 'No instructions provided'}
                 </p>
@@ -216,11 +252,18 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
                 <CardTitle>Ready to Start?</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Click the button below to enter the video lobby and start your meeting.
+                <p className="mb-4 text-sm text-muted-foreground">
+                  Click the button below to enter the video lobby and start your
+                  meeting.
                 </p>
-                <Button onClick={() => router.push(`/dashboard/meetings/${meeting.id}/lobby` as any)}>
-                  <Video className="h-4 w-4 mr-2" />
+                <Button
+                  onClick={() =>
+                    router.push(
+                      `/dashboard/meetings/${meeting.id}/lobby` as any
+                    )
+                  }
+                >
+                  <Video className="mr-2 h-4 w-4" />
                   Start Meeting
                 </Button>
               </CardContent>
@@ -235,7 +278,8 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
               <CardContent className="flex items-center gap-3">
                 <Loader2 className="h-5 w-5 animate-spin" />
                 <p className="text-sm text-muted-foreground">
-                  We're generating your meeting summary and transcript. This usually takes a few minutes.
+                  We're generating your meeting summary and transcript. This
+                  usually takes a few minutes.
                 </p>
               </CardContent>
             </Card>
@@ -244,7 +288,7 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
 
         <TabsContent value="summary">
           {meeting.summary ? (
-            <MeetingSummary 
+            <MeetingSummary
               summary={meeting.summary}
               meeting={{
                 name: meeting.name,
@@ -264,7 +308,8 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Summary not available yet. It will be generated after the meeting ends.
+                  Summary not available yet. It will be generated after the
+                  meeting ends.
                 </p>
               </CardContent>
             </Card>
@@ -284,7 +329,8 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Transcript not available yet. It will be generated after the meeting ends.
+                  Transcript not available yet. It will be generated after the
+                  meeting ends.
                 </p>
               </CardContent>
             </Card>
@@ -293,7 +339,7 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
 
         <TabsContent value="recording">
           {meeting.recordingUrl ? (
-            <VideoPlayer 
+            <VideoPlayer
               recordingUrl={meeting.recordingUrl}
               meetingName={meeting.name}
               duration={meeting.durationSeconds || undefined}
@@ -308,7 +354,8 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Recording not available yet. It will be available after the meeting ends.
+                  Recording not available yet. It will be available after the
+                  meeting ends.
                 </p>
               </CardContent>
             </Card>
@@ -317,7 +364,7 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
 
         <TabsContent value="chat">
           {meeting.transcriptUrl ? (
-            <AIChat 
+            <AIChat
               meetingId={meeting.id}
               agentName={meeting.agent?.name}
               agentAvatarSeed={meeting.agent?.avatarSeed || undefined}
@@ -332,7 +379,8 @@ export function MeetingDetails({ meetingId }: MeetingDetailsProps) {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Q&A will be available after the meeting transcript is processed.
+                  Q&A will be available after the meeting transcript is
+                  processed.
                 </p>
               </CardContent>
             </Card>

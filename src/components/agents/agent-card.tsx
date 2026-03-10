@@ -1,7 +1,12 @@
 'use client';
 
 import * as React from 'react';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -15,26 +20,33 @@ interface AgentCardProps {
   onViewDetails?: (agent: Agent) => void;
 }
 
-export function AgentCard({ agent, onEdit, onDelete, onViewDetails }: AgentCardProps) {
+export function AgentCard({
+  agent,
+  onEdit,
+  onDelete,
+  onViewDetails,
+}: AgentCardProps) {
   // Generate DiceBear avatar URL
   const avatarUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${agent.avatarSeed || agent.id}`;
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="transition-shadow hover:shadow-md">
       <CardHeader className="flex flex-row items-center gap-4 pb-4">
         <Avatar className="h-16 w-16">
           <AvatarImage src={avatarUrl} alt={agent.name} />
-          <AvatarFallback>{agent.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+          <AvatarFallback>
+            {agent.name.substring(0, 2).toUpperCase()}
+          </AvatarFallback>
         </Avatar>
-        <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-lg truncate">{agent.name}</h3>
+        <div className="min-w-0 flex-1">
+          <h3 className="truncate text-lg font-semibold">{agent.name}</h3>
           <Badge variant="secondary" className="mt-1">
             AI Agent
           </Badge>
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground line-clamp-3">
+        <p className="line-clamp-3 text-sm text-muted-foreground">
           {agent.instructions}
         </p>
       </CardContent>
@@ -46,7 +58,7 @@ export function AgentCard({ agent, onEdit, onDelete, onViewDetails }: AgentCardP
             className="flex-1"
             onClick={() => onViewDetails(agent)}
           >
-            <MessageSquare className="h-4 w-4 mr-2" />
+            <MessageSquare className="mr-2 h-4 w-4" />
             Details
           </Button>
         )}

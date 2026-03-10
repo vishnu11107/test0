@@ -28,19 +28,27 @@ export interface MeetingFormData {
   agentId: string;
 }
 
-export function MeetingForm({ meeting, onSubmit, onCancel, isLoading }: MeetingFormProps) {
+export function MeetingForm({
+  meeting,
+  onSubmit,
+  onCancel,
+  isLoading,
+}: MeetingFormProps) {
   const [formData, setFormData] = React.useState<MeetingFormData>({
     name: meeting?.name || '',
     agentId: meeting?.agentId || '',
   });
 
-  const [errors, setErrors] = React.useState<Partial<Record<keyof MeetingFormData, string>>>({});
+  const [errors, setErrors] = React.useState<
+    Partial<Record<keyof MeetingFormData, string>>
+  >({});
 
   // Fetch agents for selection
-  const { data: agentsData, isLoading: isLoadingAgents } = trpc.agents.getMany.useQuery({
-    page: 1,
-    limit: 100, // Get all agents for selection
-  });
+  const { data: agentsData, isLoading: isLoadingAgents } =
+    trpc.agents.getMany.useQuery({
+      page: 1,
+      limit: 100, // Get all agents for selection
+    });
 
   const agents = agentsData?.data || [];
   const selectedAgent = agents.find((a) => a.id === formData.agentId);
@@ -121,7 +129,9 @@ export function MeetingForm({ meeting, onSubmit, onCancel, isLoading }: MeetingF
                       src={`https://api.dicebear.com/7.x/bottts/svg?seed=${agent.avatarSeed || agent.id}`}
                       alt={agent.name}
                     />
-                    <AvatarFallback>{agent.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+                    <AvatarFallback>
+                      {agent.name.substring(0, 2).toUpperCase()}
+                    </AvatarFallback>
                   </Avatar>
                   <span>{agent.name}</span>
                 </div>
@@ -142,7 +152,7 @@ export function MeetingForm({ meeting, onSubmit, onCancel, isLoading }: MeetingF
       </div>
 
       {selectedAgent && (
-        <div className="p-4 border rounded-lg space-y-2">
+        <div className="space-y-2 rounded-lg border p-4">
           <div className="flex items-center gap-3">
             <Avatar className="h-12 w-12">
               <AvatarImage src={avatarUrl} alt={selectedAgent.name} />
@@ -155,20 +165,25 @@ export function MeetingForm({ meeting, onSubmit, onCancel, isLoading }: MeetingF
               <p className="text-sm text-muted-foreground">Selected Agent</p>
             </div>
           </div>
-          <p className="text-sm text-muted-foreground line-clamp-2">
+          <p className="line-clamp-2 text-sm text-muted-foreground">
             {selectedAgent.instructions}
           </p>
         </div>
       )}
 
-      <div className="flex gap-3 justify-end">
+      <div className="flex justify-end gap-3">
         {onCancel && (
-          <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            disabled={isLoading}
+          >
             Cancel
           </Button>
         )}
         <Button type="submit" disabled={isLoading || agents.length === 0}>
-          {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {meeting ? 'Update Meeting' : 'Create Meeting'}
         </Button>
       </div>

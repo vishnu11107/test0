@@ -4,13 +4,13 @@ import * as React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 // import { Separator } from '@/components/ui/separator';
-import { 
-  FileText, 
-  Lightbulb, 
-  CheckSquare, 
+import {
+  FileText,
+  Lightbulb,
+  CheckSquare,
   Target,
   Clock,
-  Calendar
+  Calendar,
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -56,36 +56,48 @@ function parseSummary(summary: string): ParsedSummary {
   const actionItems: string[] = [];
   let outcome = '';
 
-  const lines = summary.split('\n').filter(line => line.trim());
-  
+  const lines = summary.split('\n').filter((line) => line.trim());
+
   let currentSection = '';
-  
+
   for (const line of lines) {
     const trimmed = line.trim();
-    
+
     // Detect section headers
-    if (trimmed.toLowerCase().includes('key topics') || 
-        trimmed.toLowerCase().includes('topics discussed')) {
+    if (
+      trimmed.toLowerCase().includes('key topics') ||
+      trimmed.toLowerCase().includes('topics discussed')
+    ) {
       currentSection = 'topics';
       continue;
-    } else if (trimmed.toLowerCase().includes('insights') || 
-               trimmed.toLowerCase().includes('advice')) {
+    } else if (
+      trimmed.toLowerCase().includes('insights') ||
+      trimmed.toLowerCase().includes('advice')
+    ) {
       currentSection = 'insights';
       continue;
-    } else if (trimmed.toLowerCase().includes('action items') || 
-               trimmed.toLowerCase().includes('next steps')) {
+    } else if (
+      trimmed.toLowerCase().includes('action items') ||
+      trimmed.toLowerCase().includes('next steps')
+    ) {
       currentSection = 'actions';
       continue;
-    } else if (trimmed.toLowerCase().includes('outcome') || 
-               trimmed.toLowerCase().includes('conclusion')) {
+    } else if (
+      trimmed.toLowerCase().includes('outcome') ||
+      trimmed.toLowerCase().includes('conclusion')
+    ) {
       currentSection = 'outcome';
       continue;
     }
-    
+
     // Extract items based on current section
-    if (trimmed.startsWith('- ') || trimmed.startsWith('• ') || /^\d+\./.test(trimmed)) {
+    if (
+      trimmed.startsWith('- ') ||
+      trimmed.startsWith('• ') ||
+      /^\d+\./.test(trimmed)
+    ) {
       const item = trimmed.replace(/^[-•]\s*/, '').replace(/^\d+\.\s*/, '');
-      
+
       switch (currentSection) {
         case 'topics':
           keyTopics.push(item);
@@ -125,37 +137,37 @@ export function MeetingSummary({ summary, meeting }: MeetingSummaryProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+          <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-3">
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-muted-foreground" />
               <span className="text-muted-foreground">Date:</span>
               <span>
-                {meeting.startedAt 
+                {meeting.startedAt
                   ? format(new Date(meeting.startedAt), 'MMM d, yyyy')
-                  : 'N/A'
-                }
+                  : 'N/A'}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-muted-foreground" />
               <span className="text-muted-foreground">Duration:</span>
               <span>
-                {meeting.durationSeconds 
+                {meeting.durationSeconds
                   ? `${Math.floor(meeting.durationSeconds / 60)}m ${meeting.durationSeconds % 60}s`
-                  : 'N/A'
-                }
+                  : 'N/A'}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-muted-foreground">Agent:</span>
-              <Badge variant="secondary">{meeting.agent?.name || 'Unknown'}</Badge>
+              <Badge variant="secondary">
+                {meeting.agent?.name || 'Unknown'}
+              </Badge>
             </div>
           </div>
-          
-          <div className="border-t my-4" />
-          
+
+          <div className="my-4 border-t" />
+
           <div>
-            <h4 className="font-semibold mb-2 flex items-center gap-2">
+            <h4 className="mb-2 flex items-center gap-2 font-semibold">
               <Target className="h-4 w-4" />
               Meeting Outcome
             </h4>
@@ -179,7 +191,7 @@ export function MeetingSummary({ summary, meeting }: MeetingSummaryProps) {
             <div className="space-y-2">
               {parsedSummary.keyTopics.map((topic, index) => (
                 <div key={index} className="flex items-start gap-2">
-                  <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0" />
+                  <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-blue-500" />
                   <p className="text-sm">{topic}</p>
                 </div>
               ))}
@@ -200,8 +212,11 @@ export function MeetingSummary({ summary, meeting }: MeetingSummaryProps) {
           <CardContent>
             <div className="space-y-3">
               {parsedSummary.insights.map((insight, index) => (
-                <div key={index} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
-                  <Lightbulb className="h-4 w-4 text-yellow-500 mt-0.5 flex-shrink-0" />
+                <div
+                  key={index}
+                  className="flex items-start gap-3 rounded-lg bg-muted/50 p-3"
+                >
+                  <Lightbulb className="mt-0.5 h-4 w-4 flex-shrink-0 text-yellow-500" />
                   <p className="text-sm">{insight}</p>
                 </div>
               ))}
@@ -222,8 +237,11 @@ export function MeetingSummary({ summary, meeting }: MeetingSummaryProps) {
           <CardContent>
             <div className="space-y-2">
               {parsedSummary.actionItems.map((action, index) => (
-                <div key={index} className="flex items-start gap-3 p-2 hover:bg-muted/50 rounded-md transition-colors">
-                  <CheckSquare className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                <div
+                  key={index}
+                  className="flex items-start gap-3 rounded-md p-2 transition-colors hover:bg-muted/50"
+                >
+                  <CheckSquare className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-500" />
                   <p className="text-sm">{action}</p>
                 </div>
               ))}
@@ -242,7 +260,7 @@ export function MeetingSummary({ summary, meeting }: MeetingSummaryProps) {
         </CardHeader>
         <CardContent>
           <div className="prose prose-sm max-w-none">
-            <p className="text-sm whitespace-pre-wrap leading-relaxed">
+            <p className="whitespace-pre-wrap text-sm leading-relaxed">
               {parsedSummary.fullSummary}
             </p>
           </div>

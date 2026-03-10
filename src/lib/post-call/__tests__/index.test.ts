@@ -41,7 +41,8 @@ describe('Post-call utilities', () => {
     });
 
     it('parses string format transcript correctly', () => {
-      const stringTranscript = 'user: Hello\nagent: Hi there\nuser: How are you?';
+      const stringTranscript =
+        'user: Hello\nagent: Hi there\nuser: How are you?';
 
       const result = parseTranscript(stringTranscript);
 
@@ -54,9 +55,7 @@ describe('Post-call utilities', () => {
 
     it('handles object format with entries property', () => {
       const objectTranscript = {
-        entries: [
-          { timestamp: 1000, speaker: 'user', text: 'Hello' },
-        ],
+        entries: [{ timestamp: 1000, speaker: 'user', text: 'Hello' }],
       };
 
       const result = parseTranscript(objectTranscript);
@@ -116,17 +115,19 @@ describe('Post-call utilities', () => {
   describe('generateStructuredSummary', () => {
     it('generates structured summary successfully', async () => {
       const mockResponse = {
-        choices: [{
-          message: {
-            content: JSON.stringify({
-              keyTopics: ['Topic 1', 'Topic 2'],
-              insights: ['Insight 1'],
-              actionItems: ['Action 1'],
-              outcome: 'Successful meeting',
-              fullSummary: 'Complete summary text',
-            }),
+        choices: [
+          {
+            message: {
+              content: JSON.stringify({
+                keyTopics: ['Topic 1', 'Topic 2'],
+                insights: ['Insight 1'],
+                actionItems: ['Action 1'],
+                outcome: 'Successful meeting',
+                fullSummary: 'Complete summary text',
+              }),
+            },
           },
-        }],
+        ],
       };
 
       (openai.chat.completions.create as any).mockResolvedValue(mockResponse);
@@ -163,11 +164,13 @@ describe('Post-call utilities', () => {
 
     it('handles non-JSON response gracefully', async () => {
       const mockResponse = {
-        choices: [{
-          message: {
-            content: 'This is a plain text summary',
+        choices: [
+          {
+            message: {
+              content: 'This is a plain text summary',
+            },
           },
-        }],
+        ],
       };
 
       (openai.chat.completions.create as any).mockResolvedValue(mockResponse);
@@ -198,11 +201,13 @@ describe('Post-call utilities', () => {
 
     it('throws error when no content is received', async () => {
       const mockResponse = {
-        choices: [{
-          message: {
-            content: null,
+        choices: [
+          {
+            message: {
+              content: null,
+            },
           },
-        }],
+        ],
       };
 
       (openai.chat.completions.create as any).mockResolvedValue(mockResponse);
@@ -216,11 +221,13 @@ describe('Post-call utilities', () => {
   describe('answerMeetingQuestion', () => {
     it('answers question successfully', async () => {
       const mockResponse = {
-        choices: [{
-          message: {
-            content: 'This is the answer to your question.',
+        choices: [
+          {
+            message: {
+              content: 'This is the answer to your question.',
+            },
           },
-        }],
+        ],
       };
 
       (openai.chat.completions.create as any).mockResolvedValue(mockResponse);
@@ -262,11 +269,13 @@ describe('Post-call utilities', () => {
 
     it('returns fallback message when no content received', async () => {
       const mockResponse = {
-        choices: [{
-          message: {
-            content: null,
+        choices: [
+          {
+            message: {
+              content: null,
+            },
           },
-        }],
+        ],
       };
 
       (openai.chat.completions.create as any).mockResolvedValue(mockResponse);
@@ -284,16 +293,32 @@ describe('Post-call utilities', () => {
   describe('searchTranscript', () => {
     const transcript = [
       { timestamp: 1000, speaker: 'user' as const, text: 'Hello world' },
-      { timestamp: 2000, speaker: 'agent' as const, text: 'Hi there, how can I help?' },
-      { timestamp: 3000, speaker: 'user' as const, text: 'I need help with my project' },
+      {
+        timestamp: 2000,
+        speaker: 'agent' as const,
+        text: 'Hi there, how can I help?',
+      },
+      {
+        timestamp: 3000,
+        speaker: 'user' as const,
+        text: 'I need help with my project',
+      },
     ];
 
     it('searches transcript entries case-insensitively', () => {
       const result = searchTranscript(transcript, 'HELP');
 
       expect(result).toEqual([
-        { timestamp: 2000, speaker: 'agent', text: 'Hi there, how can I help?' },
-        { timestamp: 3000, speaker: 'user', text: 'I need help with my project' },
+        {
+          timestamp: 2000,
+          speaker: 'agent',
+          text: 'Hi there, how can I help?',
+        },
+        {
+          timestamp: 3000,
+          speaker: 'user',
+          text: 'I need help with my project',
+        },
       ]);
     });
 

@@ -62,12 +62,15 @@ describe('AgentCard', () => {
   it('truncates long instructions', () => {
     const longAgent = {
       ...mockAgent,
-      instructions: 'This is a very long instruction text that should be truncated when displayed in the card component to maintain a clean and consistent layout across all agent cards in the grid view.',
+      instructions:
+        'This is a very long instruction text that should be truncated when displayed in the card component to maintain a clean and consistent layout across all agent cards in the grid view.',
     };
 
     render(<AgentCard agent={longAgent} />);
 
-    const instructionsElement = screen.getByText(/this is a very long instruction/i);
+    const instructionsElement = screen.getByText(
+      /this is a very long instruction/i
+    );
     expect(instructionsElement).toHaveClass('line-clamp-3');
   });
 });

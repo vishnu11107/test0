@@ -25,7 +25,9 @@ describe('AIChat', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (trpc.meetings.askQuestion.useMutation as any).mockReturnValue(mockMutation);
+    (trpc.meetings.askQuestion.useMutation as any).mockReturnValue(
+      mockMutation
+    );
   });
 
   it('renders initial state correctly', () => {
@@ -33,37 +35,55 @@ describe('AIChat', () => {
 
     expect(screen.getByText('Ask About This Meeting')).toBeInTheDocument();
     expect(screen.getByText('Start a conversation')).toBeInTheDocument();
-    expect(screen.getByText(/ask questions about your meeting/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Ask a question about this meeting...')).toBeInTheDocument();
+    expect(
+      screen.getByText(/ask questions about your meeting/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('Ask a question about this meeting...')
+    ).toBeInTheDocument();
   });
 
   it('displays suggested questions', () => {
     render(<AIChat meetingId="test-meeting-id" />);
 
     expect(screen.getByText('Suggested questions:')).toBeInTheDocument();
-    expect(screen.getByText('What were the main takeaways from this meeting?')).toBeInTheDocument();
-    expect(screen.getByText('What action items were discussed?')).toBeInTheDocument();
-    expect(screen.getByText('Can you summarize the key advice given?')).toBeInTheDocument();
+    expect(
+      screen.getByText('What were the main takeaways from this meeting?')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('What action items were discussed?')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Can you summarize the key advice given?')
+    ).toBeInTheDocument();
   });
 
   it('fills input when suggested question is clicked', async () => {
     const user = userEvent.setup();
-    
+
     render(<AIChat meetingId="test-meeting-id" />);
 
-    const suggestedQuestion = screen.getByText('What were the main takeaways from this meeting?');
+    const suggestedQuestion = screen.getByText(
+      'What were the main takeaways from this meeting?'
+    );
     await user.click(suggestedQuestion);
 
-    const input = screen.getByPlaceholderText('Ask a question about this meeting...');
-    expect(input).toHaveValue('What were the main takeaways from this meeting?');
+    const input = screen.getByPlaceholderText(
+      'Ask a question about this meeting...'
+    );
+    expect(input).toHaveValue(
+      'What were the main takeaways from this meeting?'
+    );
   });
 
   it('submits question when form is submitted', async () => {
     const user = userEvent.setup();
-    
+
     render(<AIChat meetingId="test-meeting-id" />);
 
-    const input = screen.getByPlaceholderText('Ask a question about this meeting...');
+    const input = screen.getByPlaceholderText(
+      'Ask a question about this meeting...'
+    );
     const submitButton = screen.getByRole('button', { name: '' }); // Send button
 
     await user.type(input, 'What was discussed?');
@@ -77,10 +97,12 @@ describe('AIChat', () => {
 
   it('submits question when Enter is pressed', async () => {
     const user = userEvent.setup();
-    
+
     render(<AIChat meetingId="test-meeting-id" />);
 
-    const input = screen.getByPlaceholderText('Ask a question about this meeting...');
+    const input = screen.getByPlaceholderText(
+      'Ask a question about this meeting...'
+    );
 
     await user.type(input, 'What was discussed?');
     await user.keyboard('{Enter}');
@@ -93,10 +115,12 @@ describe('AIChat', () => {
 
   it('does not submit when Shift+Enter is pressed', async () => {
     const user = userEvent.setup();
-    
+
     render(<AIChat meetingId="test-meeting-id" />);
 
-    const input = screen.getByPlaceholderText('Ask a question about this meeting...');
+    const input = screen.getByPlaceholderText(
+      'Ask a question about this meeting...'
+    );
 
     await user.type(input, 'What was discussed?');
     await user.keyboard('{Shift>}{Enter}{/Shift}');
@@ -109,11 +133,15 @@ describe('AIChat', () => {
       ...mockMutation,
       isLoading: true,
     };
-    (trpc.meetings.askQuestion.useMutation as any).mockReturnValue(loadingMutation);
+    (trpc.meetings.askQuestion.useMutation as any).mockReturnValue(
+      loadingMutation
+    );
 
     render(<AIChat meetingId="test-meeting-id" />);
 
-    const input = screen.getByPlaceholderText('Ask a question about this meeting...');
+    const input = screen.getByPlaceholderText(
+      'Ask a question about this meeting...'
+    );
     const submitButton = screen.getByRole('button', { name: '' });
 
     expect(input).toBeDisabled();
@@ -125,7 +153,9 @@ describe('AIChat', () => {
       ...mockMutation,
       isLoading: true,
     };
-    (trpc.meetings.askQuestion.useMutation as any).mockReturnValue(loadingMutation);
+    (trpc.meetings.askQuestion.useMutation as any).mockReturnValue(
+      loadingMutation
+    );
 
     render(<AIChat meetingId="test-meeting-id" />);
 
@@ -139,17 +169,21 @@ describe('AIChat', () => {
       ...mockMutation,
       error: { message: 'Failed to get answer' },
     };
-    (trpc.meetings.askQuestion.useMutation as any).mockReturnValue(errorMutation);
+    (trpc.meetings.askQuestion.useMutation as any).mockReturnValue(
+      errorMutation
+    );
 
     render(<AIChat meetingId="test-meeting-id" />);
 
-    expect(screen.getByText('Failed to get answer. Please try again.')).toBeInTheDocument();
+    expect(
+      screen.getByText('Failed to get answer. Please try again.')
+    ).toBeInTheDocument();
   });
 
   it('displays agent name and avatar when provided', () => {
     render(
-      <AIChat 
-        meetingId="test-meeting-id" 
+      <AIChat
+        meetingId="test-meeting-id"
         agentName="Test Agent"
         agentAvatarSeed="test-seed"
       />
@@ -162,11 +196,11 @@ describe('AIChat', () => {
 
   it('does not submit empty questions', async () => {
     const user = userEvent.setup();
-    
+
     render(<AIChat meetingId="test-meeting-id" />);
 
     const submitButton = screen.getByRole('button', { name: '' });
-    
+
     // Button should be disabled when input is empty
     expect(submitButton).toBeDisabled();
 
@@ -177,21 +211,23 @@ describe('AIChat', () => {
 
   it('does not submit whitespace-only questions', async () => {
     const user = userEvent.setup();
-    
+
     render(<AIChat meetingId="test-meeting-id" />);
 
-    const input = screen.getByPlaceholderText('Ask a question about this meeting...');
+    const input = screen.getByPlaceholderText(
+      'Ask a question about this meeting...'
+    );
     const submitButton = screen.getByRole('button', { name: '' });
 
     await user.type(input, '   ');
-    
+
     // Button should still be disabled
     expect(submitButton).toBeDisabled();
   });
 
   it('clears input after successful submission', async () => {
     const user = userEvent.setup();
-    
+
     // Mock successful mutation
     const successMutation = {
       mutate: vi.fn((data, options) => {
@@ -206,12 +242,16 @@ describe('AIChat', () => {
       error: null,
       isLoading: false,
     };
-    (trpc.meetings.askQuestion.useMutation as any).mockReturnValue(successMutation);
+    (trpc.meetings.askQuestion.useMutation as any).mockReturnValue(
+      successMutation
+    );
 
     render(<AIChat meetingId="test-meeting-id" />);
 
-    const input = screen.getByPlaceholderText('Ask a question about this meeting...');
-    
+    const input = screen.getByPlaceholderText(
+      'Ask a question about this meeting...'
+    );
+
     await user.type(input, 'What was discussed?');
     await user.keyboard('{Enter}');
 
@@ -223,7 +263,7 @@ describe('AIChat', () => {
 
   it('displays conversation messages after successful Q&A', async () => {
     const user = userEvent.setup();
-    
+
     // Mock successful mutation
     const successMutation = {
       mutate: vi.fn((data, options) => {
@@ -237,19 +277,25 @@ describe('AIChat', () => {
       error: null,
       isLoading: false,
     };
-    (trpc.meetings.askQuestion.useMutation as any).mockReturnValue(successMutation);
+    (trpc.meetings.askQuestion.useMutation as any).mockReturnValue(
+      successMutation
+    );
 
     render(<AIChat meetingId="test-meeting-id" agentName="Test Agent" />);
 
-    const input = screen.getByPlaceholderText('Ask a question about this meeting...');
-    
+    const input = screen.getByPlaceholderText(
+      'Ask a question about this meeting...'
+    );
+
     await user.type(input, 'What was discussed?');
     await user.keyboard('{Enter}');
 
     // Should show the question and answer
     await waitFor(() => {
       expect(screen.getByText('What was discussed?')).toBeInTheDocument();
-      expect(screen.getByText('This is the AI response to your question.')).toBeInTheDocument();
+      expect(
+        screen.getByText('This is the AI response to your question.')
+      ).toBeInTheDocument();
       expect(screen.getByText('Test Agent')).toBeInTheDocument();
     });
   });

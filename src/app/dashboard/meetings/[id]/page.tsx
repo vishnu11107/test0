@@ -6,6 +6,8 @@ interface MeetingDetailsPageProps {
   };
 }
 
-export default function MeetingDetailsPage({ params }: MeetingDetailsPageProps) {
+export default function MeetingDetailsPage({
+  params,
+}: MeetingDetailsPageProps) {
   return <MeetingDetails meetingId={params.id} />;
 }

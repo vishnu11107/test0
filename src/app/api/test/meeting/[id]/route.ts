@@ -44,10 +44,7 @@ export async function GET(
       .limit(1);
 
     if (!result || result.length === 0) {
-      return NextResponse.json(
-        { error: 'Meeting not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Meeting not found' }, { status: 404 });
     }
 
     return NextResponse.json({
@@ -56,7 +53,7 @@ export async function GET(
     });
   } catch (error) {
     console.error('Error fetching meeting:', error);
-    
+
     return NextResponse.json(
       {
         success: false,
@@ -88,10 +85,7 @@ export async function PATCH(
       .returning();
 
     if (!updatedMeeting) {
-      return NextResponse.json(
-        { error: 'Meeting not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Meeting not found' }, { status: 404 });
     }
 
     return NextResponse.json({
@@ -100,7 +94,7 @@ export async function PATCH(
     });
   } catch (error) {
     console.error('Error updating meeting:', error);
-    
+
     return NextResponse.json(
       {
         success: false,

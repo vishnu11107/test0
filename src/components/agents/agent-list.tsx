@@ -100,7 +100,7 @@ export function AgentList() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">AI Agents</h2>
           <p className="text-muted-foreground">
@@ -108,14 +108,14 @@ export function AgentList() {
           </p>
         </div>
         <Button onClick={() => setIsCreateDialogOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="mr-2 h-4 w-4" />
           Create Agent
         </Button>
       </div>
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
         <Input
           placeholder="Search agents..."
           value={search}
@@ -127,25 +127,30 @@ export function AgentList() {
       {/* Content */}
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" data-testid="loader" />
+          <Loader2
+            className="h-8 w-8 animate-spin text-muted-foreground"
+            data-testid="loader"
+          />
         </div>
       ) : error ? (
-        <div className="flex flex-col items-center justify-center py-12 gap-4">
+        <div className="flex flex-col items-center justify-center gap-4 py-12">
           <AlertCircle className="h-12 w-12 text-destructive" />
           <p className="text-sm text-muted-foreground">
             Failed to load agents. Please try again.
           </p>
         </div>
       ) : data?.data.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 gap-4">
+        <div className="flex flex-col items-center justify-center gap-4 py-12">
           <p className="text-sm text-muted-foreground">
-            {search ? 'No agents found matching your search.' : 'No agents yet. Create your first AI agent!'}
+            {search
+              ? 'No agents found matching your search.'
+              : 'No agents yet. Create your first AI agent!'}
           </p>
         </div>
       ) : (
         <>
           {/* Agent Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {data?.data.map((agent) => (
               <AgentCard
                 key={agent.id}
@@ -189,7 +194,8 @@ export function AgentList() {
           <DialogHeader>
             <DialogTitle>Create AI Agent</DialogTitle>
             <DialogDescription>
-              Create a custom AI agent with specific instructions and personality.
+              Create a custom AI agent with specific instructions and
+              personality.
             </DialogDescription>
           </DialogHeader>
           <AgentForm
@@ -229,10 +235,11 @@ export function AgentList() {
           <DialogHeader>
             <DialogTitle>Delete Agent</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete "{selectedAgent?.name}"? This action cannot be undone.
+              Are you sure you want to delete "{selectedAgent?.name}"? This
+              action cannot be undone.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex gap-3 justify-end">
+          <div className="flex justify-end gap-3">
             <Button
               variant="outline"
               onClick={() => {
@@ -249,7 +256,7 @@ export function AgentList() {
               disabled={deleteMutation.isPending}
             >
               {deleteMutation.isPending && (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
               Delete
             </Button>

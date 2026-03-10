@@ -2,7 +2,13 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, CheckCircle, XCircle, Play } from 'lucide-react';
 import { toast } from 'sonner';
@@ -29,9 +35,9 @@ export default function TestIntegrationPage() {
     try {
       const response = await fetch('/api/test/openai');
       const data = await response.json();
-      
+
       setOpenaiResult(data);
-      
+
       if (data.success) {
         toast.success('OpenAI integration test passed!');
       } else {
@@ -59,9 +65,9 @@ export default function TestIntegrationPage() {
         method: 'POST',
       });
       const data = await response.json();
-      
+
       setInngestResult(data);
-      
+
       if (data.success) {
         toast.success('Inngest integration test passed!');
       } else {
@@ -93,9 +99,9 @@ export default function TestIntegrationPage() {
         body: JSON.stringify({}), // Use default sample data
       });
       const data = await response.json();
-      
+
       setPostCallResult(data);
-      
+
       if (data.success) {
         toast.success('Post-call processing test passed!');
       } else {
@@ -118,15 +124,15 @@ export default function TestIntegrationPage() {
     await Promise.all([testOpenAI(), testInngest(), testPostCall()]);
   };
 
-  const ResultCard = ({ 
-    title, 
-    result, 
-    loading, 
-    onTest 
-  }: { 
-    title: string; 
-    result: TestResult | null; 
-    loading: boolean; 
+  const ResultCard = ({
+    title,
+    result,
+    loading,
+    onTest,
+  }: {
+    title: string;
+    result: TestResult | null;
+    loading: boolean;
     onTest: () => void;
   }) => (
     <Card>
@@ -135,13 +141,12 @@ export default function TestIntegrationPage() {
           <div>
             <CardTitle className="flex items-center gap-2">
               {title}
-              {result && (
-                result.success ? (
+              {result &&
+                (result.success ? (
                   <CheckCircle className="h-5 w-5 text-green-500" />
                 ) : (
                   <XCircle className="h-5 w-5 text-red-500" />
-                )
-              )}
+                ))}
             </CardTitle>
             <CardDescription>
               Test the {title.toLowerCase()} integration
@@ -168,18 +173,18 @@ export default function TestIntegrationPage() {
                 {result.message}
               </span>
             </div>
-            
+
             {result.error && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-                <p className="text-sm text-red-700 font-medium">Error:</p>
+              <div className="rounded-md border border-red-200 bg-red-50 p-3">
+                <p className="text-sm font-medium text-red-700">Error:</p>
                 <p className="text-sm text-red-600">{result.error}</p>
               </div>
             )}
-            
+
             {result.data && (
-              <div className="p-3 bg-gray-50 border border-gray-200 rounded-md">
-                <p className="text-sm font-medium mb-2">Response Data:</p>
-                <pre className="text-xs text-gray-600 overflow-auto">
+              <div className="rounded-md border border-gray-200 bg-gray-50 p-3">
+                <p className="mb-2 text-sm font-medium">Response Data:</p>
+                <pre className="overflow-auto text-xs text-gray-600">
                   {JSON.stringify(result.data, null, 2)}
                 </pre>
               </div>
@@ -191,20 +196,24 @@ export default function TestIntegrationPage() {
   );
 
   return (
-    <div className="container mx-auto py-8 space-y-8">
+    <div className="container mx-auto space-y-8 py-8">
       <div>
         <h1 className="text-3xl font-bold">Integration Testing</h1>
-        <p className="text-muted-foreground mt-2">
-          Test the OpenAI and Inngest integrations to ensure everything is working correctly.
+        <p className="mt-2 text-muted-foreground">
+          Test the OpenAI and Inngest integrations to ensure everything is
+          working correctly.
         </p>
       </div>
 
       <div className="flex gap-4">
-        <Button onClick={testAll} disabled={openaiLoading || inngestLoading || postCallLoading}>
-          {(openaiLoading || inngestLoading || postCallLoading) ? (
-            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+        <Button
+          onClick={testAll}
+          disabled={openaiLoading || inngestLoading || postCallLoading}
+        >
+          {openaiLoading || inngestLoading || postCallLoading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
-            <Play className="h-4 w-4 mr-2" />
+            <Play className="mr-2 h-4 w-4" />
           )}
           Test All Integrations
         </Button>
@@ -217,7 +226,7 @@ export default function TestIntegrationPage() {
           loading={openaiLoading}
           onTest={testOpenAI}
         />
-        
+
         <ResultCard
           title="Inngest"
           result={inngestResult}
@@ -242,29 +251,57 @@ export default function TestIntegrationPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <h4 className="font-medium mb-2">1. OpenAI Setup</h4>
-            <ul className="text-sm text-muted-foreground space-y-1 ml-4">
-              <li>• Get your API key from <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">OpenAI Platform</a></li>
+            <h4 className="mb-2 font-medium">1. OpenAI Setup</h4>
+            <ul className="ml-4 space-y-1 text-sm text-muted-foreground">
+              <li>
+                • Get your API key from{' '}
+                <a
+                  href="https://platform.openai.com/api-keys"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  OpenAI Platform
+                </a>
+              </li>
               <li>• Add it to your .env.local file as OPENAI_API_KEY</li>
-              <li>• Make sure you have sufficient credits in your OpenAI account</li>
+              <li>
+                • Make sure you have sufficient credits in your OpenAI account
+              </li>
             </ul>
           </div>
-          
+
           <div>
-            <h4 className="font-medium mb-2">2. Inngest Setup</h4>
-            <ul className="text-sm text-muted-foreground space-y-1 ml-4">
-              <li>• Sign up at <a href="https://www.inngest.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Inngest</a></li>
+            <h4 className="mb-2 font-medium">2. Inngest Setup</h4>
+            <ul className="ml-4 space-y-1 text-sm text-muted-foreground">
+              <li>
+                • Sign up at{' '}
+                <a
+                  href="https://www.inngest.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  Inngest
+                </a>
+              </li>
               <li>• Create a new app and get your Event Key and Signing Key</li>
-              <li>• Add them to your .env.local file as INNGEST_EVENT_KEY and INNGEST_SIGNING_KEY</li>
-              <li>• Configure your app URL in Inngest dashboard: http://localhost:3000/api/inngest</li>
+              <li>
+                • Add them to your .env.local file as INNGEST_EVENT_KEY and
+                INNGEST_SIGNING_KEY
+              </li>
+              <li>
+                • Configure your app URL in Inngest dashboard:
+                http://localhost:3000/api/inngest
+              </li>
             </ul>
           </div>
-          
+
           <div>
-            <h4 className="font-medium mb-2">3. Environment Variables</h4>
-            <div className="p-3 bg-gray-50 border border-gray-200 rounded-md">
+            <h4 className="mb-2 font-medium">3. Environment Variables</h4>
+            <div className="rounded-md border border-gray-200 bg-gray-50 p-3">
               <pre className="text-xs text-gray-600">
-{`OPENAI_API_KEY="sk-..."
+                {`OPENAI_API_KEY="sk-..."
 INNGEST_EVENT_KEY="..."
 INNGEST_SIGNING_KEY="signkey-..."`}
               </pre>

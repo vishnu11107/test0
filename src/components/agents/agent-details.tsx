@@ -6,7 +6,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, AlertCircle, Edit, Trash2, Calendar, Clock } from 'lucide-react';
+import {
+  Loader2,
+  AlertCircle,
+  Edit,
+  Trash2,
+  Calendar,
+  Clock,
+} from 'lucide-react';
 import { format } from 'date-fns';
 
 interface AgentDetailsProps {
@@ -16,19 +23,26 @@ interface AgentDetailsProps {
 }
 
 export function AgentDetails({ agentId, onEdit, onDelete }: AgentDetailsProps) {
-  const { data: agent, isLoading, error } = trpc.agents.getOne.useQuery({ id: agentId });
+  const {
+    data: agent,
+    isLoading,
+    error,
+  } = trpc.agents.getOne.useQuery({ id: agentId });
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" data-testid="loader" />
+        <Loader2
+          className="h-8 w-8 animate-spin text-muted-foreground"
+          data-testid="loader"
+        />
       </div>
     );
   }
 
   if (error || !agent) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 gap-4">
+      <div className="flex flex-col items-center justify-center gap-4 py-12">
         <AlertCircle className="h-12 w-12 text-destructive" />
         <p className="text-sm text-muted-foreground">
           {error?.message || 'Failed to load agent details.'}
@@ -44,10 +58,12 @@ export function AgentDetails({ agentId, onEdit, onDelete }: AgentDetailsProps) {
       {/* Header Card */}
       <Card>
         <CardHeader>
-          <div className="flex flex-col sm:flex-row gap-6 items-start">
+          <div className="flex flex-col items-start gap-6 sm:flex-row">
             <Avatar className="h-24 w-24">
               <AvatarImage src={avatarUrl} alt={agent.name} />
-              <AvatarFallback>{agent.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+              <AvatarFallback>
+                {agent.name.substring(0, 2).toUpperCase()}
+              </AvatarFallback>
             </Avatar>
             <div className="flex-1 space-y-2">
               <div className="flex items-start justify-between gap-4">
@@ -60,13 +76,13 @@ export function AgentDetails({ agentId, onEdit, onDelete }: AgentDetailsProps) {
                 <div className="flex gap-2">
                   {onEdit && (
                     <Button variant="outline" size="sm" onClick={onEdit}>
-                      <Edit className="h-4 w-4 mr-2" />
+                      <Edit className="mr-2 h-4 w-4" />
                       Edit
                     </Button>
                   )}
                   {onDelete && (
                     <Button variant="outline" size="sm" onClick={onDelete}>
-                      <Trash2 className="h-4 w-4 mr-2" />
+                      <Trash2 className="mr-2 h-4 w-4" />
                       Delete
                     </Button>
                   )}
@@ -75,11 +91,15 @@ export function AgentDetails({ agentId, onEdit, onDelete }: AgentDetailsProps) {
               <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
-                  <span>Created {format(new Date(agent.createdAt), 'MMM d, yyyy')}</span>
+                  <span>
+                    Created {format(new Date(agent.createdAt), 'MMM d, yyyy')}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4" />
-                  <span>Updated {format(new Date(agent.updatedAt), 'MMM d, yyyy')}</span>
+                  <span>
+                    Updated {format(new Date(agent.updatedAt), 'MMM d, yyyy')}
+                  </span>
                 </div>
               </div>
             </div>
@@ -93,7 +113,7 @@ export function AgentDetails({ agentId, onEdit, onDelete }: AgentDetailsProps) {
           <CardTitle>Instructions</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm whitespace-pre-wrap">{agent.instructions}</p>
+          <p className="whitespace-pre-wrap text-sm">{agent.instructions}</p>
         </CardContent>
       </Card>
 

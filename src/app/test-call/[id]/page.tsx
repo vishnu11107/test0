@@ -32,10 +32,10 @@ export default function TestCallPage({ params }: TestCallPageProps) {
       try {
         const response = await fetch(`/api/test/meeting/${id}`);
         const data = await response.json();
-        
+
         if (data.success) {
           setMeeting(data.meeting);
-          
+
           // Update status to active if it's upcoming
           if (data.meeting.status === 'upcoming') {
             await fetch(`/api/test/meeting/${id}`, {
@@ -43,7 +43,7 @@ export default function TestCallPage({ params }: TestCallPageProps) {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ status: 'active' }),
             });
-            setMeeting(prev => prev ? { ...prev, status: 'active' } : null);
+            setMeeting((prev) => (prev ? { ...prev, status: 'active' } : null));
           }
         } else {
           setError(data.error || 'Meeting not found');

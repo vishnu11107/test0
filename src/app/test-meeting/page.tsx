@@ -2,7 +2,13 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 
@@ -20,7 +26,7 @@ export default function TestMeetingPage() {
         method: 'POST',
       });
       const data = await response.json();
-      
+
       if (data.success) {
         setDemoData(data.data);
         toast.success('Demo data created successfully!');
@@ -42,7 +48,7 @@ export default function TestMeetingPage() {
         method: 'POST',
       });
       const data = await response.json();
-      
+
       if (data.success) {
         setIsLoggedIn(true);
         toast.success('Test login successful! You can now use the dashboard.');
@@ -66,10 +72,10 @@ export default function TestMeetingPage() {
   };
 
   return (
-    <div className="container mx-auto py-8 space-y-8">
+    <div className="container mx-auto space-y-8 py-8">
       <div>
         <h1 className="text-3xl font-bold">Test Meeting Setup</h1>
-        <p className="text-muted-foreground mt-2">
+        <p className="mt-2 text-muted-foreground">
           Create demo data and test the meeting functionality.
         </p>
       </div>
@@ -85,15 +91,11 @@ export default function TestMeetingPage() {
           <Button onClick={createDemoData} disabled={loading}>
             {loading ? 'Creating...' : 'Create Demo Data'}
           </Button>
-          
-          <Button 
-            onClick={testLogin} 
-            disabled={loginLoading}
-            variant="outline"
-          >
+
+          <Button onClick={testLogin} disabled={loginLoading} variant="outline">
             {loginLoading ? 'Logging in...' : 'Test Login (for Dashboard)'}
           </Button>
-          
+
           {isLoggedIn && (
             <p className="text-sm text-green-600">
               ✅ Logged in as demo user! You can now use dashboard features.
@@ -112,15 +114,15 @@ export default function TestMeetingPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <h4 className="font-medium mb-2">Created User:</h4>
+              <h4 className="mb-2 font-medium">Created User:</h4>
               <p className="text-sm text-muted-foreground">
                 {demoData.user.name} ({demoData.user.email})
               </p>
             </div>
 
             <div>
-              <h4 className="font-medium mb-2">Created Agents:</h4>
-              <ul className="text-sm text-muted-foreground space-y-1">
+              <h4 className="mb-2 font-medium">Created Agents:</h4>
+              <ul className="space-y-1 text-sm text-muted-foreground">
                 {demoData.agents.map((agent: any) => (
                   <li key={agent.id}>• {agent.name}</li>
                 ))}
@@ -128,34 +130,44 @@ export default function TestMeetingPage() {
             </div>
 
             <div>
-              <h4 className="font-medium mb-2">Created Meetings:</h4>
+              <h4 className="mb-2 font-medium">Created Meetings:</h4>
               <div className="space-y-2">
                 {demoData.meetings.map((meeting: any) => (
-                  <div key={meeting.id} className="flex items-center justify-between p-3 border rounded">
+                  <div
+                    key={meeting.id}
+                    className="flex items-center justify-between rounded border p-3"
+                  >
                     <div>
                       <p className="font-medium">{meeting.name}</p>
-                      <p className="text-sm text-muted-foreground">ID: {meeting.id}</p>
+                      <p className="text-sm text-muted-foreground">
+                        ID: {meeting.id}
+                      </p>
                     </div>
                     <div className="space-x-2">
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         onClick={() => startMeeting(meeting.id)}
                       >
                         Test Call
                       </Button>
                       {isLoggedIn && (
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           variant="outline"
                           onClick={() => startDashboardMeeting(meeting.id)}
                         >
                           Dashboard Call
                         </Button>
                       )}
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         variant="ghost"
-                        onClick={() => window.open(`/api/debug/meeting/${meeting.id}`, '_blank')}
+                        onClick={() =>
+                          window.open(
+                            `/api/debug/meeting/${meeting.id}`,
+                            '_blank'
+                          )
+                        }
                       >
                         Debug
                       </Button>
@@ -177,14 +189,14 @@ export default function TestMeetingPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => router.push('/dashboard/test-integration')}
             >
               Test OpenAI Integration
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => router.push('/dashboard/meetings')}
             >
               Go to Meetings Dashboard

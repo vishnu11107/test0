@@ -34,7 +34,9 @@ export function MeetingList() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = React.useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
-  const [selectedMeeting, setSelectedMeeting] = React.useState<Meeting | null>(null);
+  const [selectedMeeting, setSelectedMeeting] = React.useState<Meeting | null>(
+    null
+  );
 
   const utils = trpc.useUtils();
 
@@ -134,29 +136,28 @@ export function MeetingList() {
     setPage(1);
   };
 
-  const hasActiveFilters = statusFilter !== 'all' || agentFilter !== 'all' || search !== '';
+  const hasActiveFilters =
+    statusFilter !== 'all' || agentFilter !== 'all' || search !== '';
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Meetings</h2>
-          <p className="text-muted-foreground">
-            Manage your AI agent meetings
-          </p>
+          <p className="text-muted-foreground">Manage your AI agent meetings</p>
         </div>
         <Button onClick={() => setIsCreateDialogOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="mr-2 h-4 w-4" />
           Create Meeting
         </Button>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row">
         {/* Search */}
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
           <Input
             placeholder="Search meetings..."
             value={search}
@@ -168,7 +169,7 @@ export function MeetingList() {
         {/* Status Filter */}
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-full sm:w-[180px]">
-            <Filter className="h-4 w-4 mr-2" />
+            <Filter className="mr-2 h-4 w-4" />
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -184,7 +185,7 @@ export function MeetingList() {
         {/* Agent Filter */}
         <Select value={agentFilter} onValueChange={setAgentFilter}>
           <SelectTrigger className="w-full sm:w-[180px]">
-            <Filter className="h-4 w-4 mr-2" />
+            <Filter className="mr-2 h-4 w-4" />
             <SelectValue placeholder="Agent" />
           </SelectTrigger>
           <SelectContent>
@@ -207,17 +208,20 @@ export function MeetingList() {
       {/* Content */}
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" data-testid="loader" />
+          <Loader2
+            className="h-8 w-8 animate-spin text-muted-foreground"
+            data-testid="loader"
+          />
         </div>
       ) : error ? (
-        <div className="flex flex-col items-center justify-center py-12 gap-4">
+        <div className="flex flex-col items-center justify-center gap-4 py-12">
           <AlertCircle className="h-12 w-12 text-destructive" />
           <p className="text-sm text-muted-foreground">
             Failed to load meetings. Please try again.
           </p>
         </div>
       ) : data?.data.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 gap-4">
+        <div className="flex flex-col items-center justify-center gap-4 py-12">
           <p className="text-sm text-muted-foreground">
             {hasActiveFilters
               ? 'No meetings found matching your filters.'
@@ -227,7 +231,7 @@ export function MeetingList() {
       ) : (
         <>
           {/* Meeting Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {data?.data.map((meeting) => (
               <MeetingCard
                 key={meeting.id}
@@ -294,9 +298,7 @@ export function MeetingList() {
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>Edit Meeting</DialogTitle>
-            <DialogDescription>
-              Update your meeting name.
-            </DialogDescription>
+            <DialogDescription>Update your meeting name.</DialogDescription>
           </DialogHeader>
           {selectedMeeting && (
             <MeetingForm
@@ -323,10 +325,11 @@ export function MeetingList() {
           <DialogHeader>
             <DialogTitle>Delete Meeting</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete "{selectedMeeting?.name}"? This action cannot be undone.
+              Are you sure you want to delete "{selectedMeeting?.name}"? This
+              action cannot be undone.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex gap-3 justify-end">
+          <div className="flex justify-end gap-3">
             <Button
               variant="outline"
               onClick={() => {
@@ -343,7 +346,7 @@ export function MeetingList() {
               disabled={deleteMutation.isPending}
             >
               {deleteMutation.isPending && (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
               Delete
             </Button>

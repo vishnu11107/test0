@@ -1,7 +1,11 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { OpenAIRealtimeClient, RealtimeConfig, RealtimeMessage } from './realtime';
+import {
+  OpenAIRealtimeClient,
+  RealtimeConfig,
+  RealtimeMessage,
+} from './realtime';
 
 export interface UseRealtimeOptions {
   apiKey: string;
@@ -36,7 +40,8 @@ export function useRealtime(options: UseRealtimeOptions): UseRealtimeReturn {
   // Initialize audio context
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      audioContextRef.current = new (window.AudioContext ||
+        (window as any).webkitAudioContext)();
     }
 
     return () => {
